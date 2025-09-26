@@ -122,3 +122,13 @@ pgcli:
     pgcli postgresql://$PGUSER:$PGPASSWORD@$PGHOST:$PGPORT/$PGDATABASE
 
 alias pg := pgcli
+
+
+#################################
+## Miscellaneous
+#################################
+
+# Generate a random password
+gen-pass:
+    #!/usr/bin/env bash
+    openssl rand -base64 18 | tr '+/' '-_'
