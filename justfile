@@ -64,7 +64,7 @@ docker-ps:
 # Watch logs of all services defined in compose.yaml
 docker-logs:
     #!/usr/bin/env bash
-    docker compose -p polyglot-dtp logs -f --tail=100
+    docker compose -p polyglot-dtp logs -f -t --tail=100
 
 alias dkup := docker-up
 alias dkdown := docker-down
