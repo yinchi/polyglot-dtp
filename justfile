@@ -40,11 +40,16 @@ k8s-delete:
 ## Docker
 #################################
 
+# Build containers
+docker-build:
+    #!/usr/bin/env bash
+    docker compose -f compose.yaml --env-file .env build
+
 # Start all services defined in compose.yaml
 docker-up:
     #!/usr/bin/env bash
     docker compose -f compose.yaml --env-file .env up \
-        -d --build --remove-orphans --wait --wait-timeout 60
+        -d --remove-orphans --wait --wait-timeout 60
 
 # Remove all services defined in compose.yaml
 docker-down:
@@ -66,6 +71,7 @@ docker-logs:
     #!/usr/bin/env bash
     docker compose -p polyglot-dtp logs -f -t --tail=100
 
+alias dkb := docker-build
 alias dkup := docker-up
 alias dkdown := docker-down
 alias dkrm := docker-rm
