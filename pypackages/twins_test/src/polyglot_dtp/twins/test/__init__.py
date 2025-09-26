@@ -2,8 +2,9 @@
 
 import logging
 import sys
-import dotenv
 import tomllib
+
+import dotenv
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -61,13 +62,13 @@ on how to use this module as a template for your own digital twin module, please
 
 **Authors:**
 
-{ "\n".join(f"- {v['name']}: <{v['email']}>" for v in project_authors) }
+{"\n".join(f"- {v['name']}: <{v['email']}>" for v in project_authors)}
 """,
     version=project_version,
     license_info={
         "name": "GNU General Public License v3.0",
         "identifier": "GPL-3.0-or-later",
-    }
+    },
 )
 
 
