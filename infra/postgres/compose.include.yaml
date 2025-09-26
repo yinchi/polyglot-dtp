@@ -1,10 +1,13 @@
 # Parent compose file: $(git root)/compose.yaml
 
+# Exposes a PostgreSQL database with TimescaleDB extension on port 5432
+# and a phpPgAdmin web interface at http://pgadmin.localhost (via Traefik).
+
 services:
   postgres:
     # PostgreSQL with TimescaleDB extension
     image: timescale/timescaledb:latest-pg17
-    container_name: polyglot-dtp_postgres
+    container_name: polyglot-dtp-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-dtp}
       POSTGRES_DB: ${POSTGRES_DB:-dtp}
@@ -26,14 +29,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: polyglot-dtp_phppgadmin
+    container_name: polyglot-dtp-phppgadmin
     volumes:
       - ./phppgadmin/phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
       - ./phppgadmin/config.inc.php:/etc/phppgadmin/config.inc.php
     networks:
       - default
-    ports:
-      - "8080:80"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.phppgadmin.rule=Host(`pgadmin.localhost`)
+      - traefik.http.routers.phppgadmin.entrypoints=web
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSIL http://localhost/phppgadmin &> /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 volumes:
   pgdata:
     name: polyglot-dtp_pgdata

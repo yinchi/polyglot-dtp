@@ -9,6 +9,28 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Endpoints that should not produce access log entries
+ROOT_PATH = "/twins/test"  # Match the `--root_path` in the launch command
+SILENT_ENDPOINTS = ("/health",)
+SILENT_ENDPOINTS = {f"{ROOT_PATH}{ep}" for ep in SILENT_ENDPOINTS}
+
+
+class LogFilter(logging.Filter):
+    """Filter out log messages from silent endpoints.
+    
+    See: https://dev.to/mukulsharma/taming-fastapi-access-logs-3idi
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Returns False if the record should not be logged, True otherwise."""
+        if hasattr(record, "args") and len(record.args) > 2:
+            path = record.args[2]
+            return path not in SILENT_ENDPOINTS
+        return True
+
+
+logging.getLogger("uvicorn.access").addFilter(LogFilter())
+
 
 class Settings(BaseSettings):
     """Settings for connecting to the PostgreSQL database."""
@@ -88,3 +110,15 @@ async def read_root():
     3. Default value defined in the code (`default_value`)
     """
     return PlainTextResponse(settings.foo)
+
+
+@app.get(
+    "/health",
+    response_class=PlainTextResponse,
+    response_model=str,
+    summary="Health check",
+    responses={200: {"content": {"text/plain": {"example": "OK"}}}},
+)
+async def health():
+    """Health check endpoint."""
+    return PlainTextResponse("OK")

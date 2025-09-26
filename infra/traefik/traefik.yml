@@ -1,0 +1,20 @@
+# Expose the dashboard on port 8080 (the traefik entrypoint)
+api:
+  insecure: true
+
+# Expose a /ping endpoint on port 8080 (the traefik entrypoint)
+ping: {}
+
+# Define port numbers for entry points.
+# We won't be using SSL, relying on TLS termination by third-party services instead.
+entryPoints:
+  web:
+    address: ":80"
+  mqtt:
+    address: ":1883"
+
+# Docker service detection
+providers:
+  docker:
+    # Set a `traefik.enable=true` label to expose a Docker service
+    exposedByDefault: false

@@ -50,3 +50,5 @@ WORKDIR /app/pypackages/twins_test
 # Run the FastAPI application by default
 ENTRYPOINT [ "fastapi", "run" ]
 CMD [ "--host", "0.0.0.0", "--port", "8000", "-e", "polyglot_dtp.twins.test:app", "src/" ]
+
+EXPOSE 8000

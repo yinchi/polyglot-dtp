@@ -1,6 +1,27 @@
 include:
+  # Use `find -name compose.include.yaml` to locate and include other compose files.
   - ./infra/postgres/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
+
+services:
+  traefik:
+    image: traefik:3.5
+    container_name: polyglot-dtp-traefik
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+    networks:
+      - default
+    ports:
+      - "80:80"
+      - "8080:8080" # Traefik dashboard
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8080/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 networks:
   default:
