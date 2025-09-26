@@ -28,6 +28,9 @@ FROM python:3.13-slim-bookworm
 # Python executable must be the same, e.g., using `python:3.11-slim-bookworm`
 # will fail.
 
+RUN apt-get update && apt-get install -y \
+    curl
+
 # Setup a non-root user
 RUN groupadd --system --gid 999 fastapi \
  && useradd --system --gid 999 --uid 999 --create-home fastapi
