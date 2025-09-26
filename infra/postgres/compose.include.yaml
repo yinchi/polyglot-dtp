@@ -28,8 +28,8 @@ services:
       dockerfile: Dockerfile
     container_name: polyglot-dtp_phppgadmin
     volumes:
-      - ./phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
-      - ./config.inc.php:/etc/phppgadmin/config.inc.php
+      - ./phppgadmin/phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
+      - ./phppgadmin/config.inc.php:/etc/phppgadmin/config.inc.php
     networks:
       - default
     ports:

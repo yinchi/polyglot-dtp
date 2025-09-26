@@ -1,5 +1,5 @@
 include:
-  - ./infra/phppgadmin/compose.include.yaml
+  - ./infra/postgres/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
 
 networks:
