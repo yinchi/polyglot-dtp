@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "mhutchie.git-graph",
+        "tamasfe.even-better-toml",
+        "skellock.just",
+        "yahyabatulu.vscode-markdown-alert",
+        "bierner.github-markdown-preview",
+        "ultram4rine.vscode-choosealicense",
+        "ms-azuretools.vscode-docker"
+    ]
+}

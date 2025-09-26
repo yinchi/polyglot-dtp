@@ -1,0 +1,26 @@
+[project]
+name = "polyglot-dtp-twins-test"
+version = "0.1.0"
+description = "Test/template digital twin module for the Polyglot-DTP project"
+readme = "README.md"
+authors = [
+    { name = "Yin-Chi Chan", email = "ycc39@cam.ac.uk" },
+    { name = "Anandarup Mukherjee", email = "am2910@cam.ac.uk" }
+]
+requires-python = "==3.13.*"
+dependencies = [
+    "fastapi[standard]>=0.117.1",
+    "pydantic>=2.11.9",
+    "pydantic-settings>=2.11.0",
+    "python-dotenv>=1.1.1",
+]
+
+[tool.uv.build-backend]
+module-name = "polyglot_dtp.twins.test"
+
+[project.scripts]
+twins-test = "polyglot_dtp.twins.test:main"
+
+[build-system]
+requires = ["uv_build>=0.8.9,<0.9.0"]
+build-backend = "uv_build"

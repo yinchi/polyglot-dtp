@@ -1,0 +1,39 @@
+# Parent compose file: $(git root)/compose.yaml
+
+services:
+  postgres:
+    # PostgreSQL with TimescaleDB extension
+    image: timescale/timescaledb:latest-pg17
+    container_name: polyglot-dtp_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dtp}
+      POSTGRES_DB: ${POSTGRES_DB:-dtp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dtpsecret1}
+    networks:
+      - default
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dtp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  phppgadmin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: polyglot-dtp_phppgadmin
+    volumes:
+      - ./phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
+      - ./config.inc.php:/etc/phppgadmin/config.inc.php
+    networks:
+      - default
+    ports:
+      - "8080:80"
+volumes:
+  pgdata:
+    name: polyglot-dtp_pgdata

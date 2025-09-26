@@ -1,0 +1,4 @@
+__pycache__
+uv.lock
+launch.sh
+compose.include.yaml

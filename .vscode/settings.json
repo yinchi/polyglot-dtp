@@ -1,0 +1,14 @@
+{
+    "editor.rulers": [
+        100
+    ],
+    "python.terminal.activateEnvironment": false,
+    "python.terminal.useEnvFile": false,
+    "[markdown]": {
+        "editor.wordWrap": "bounded",
+        "editor.wordWrapColumn": 100
+    },
+    "files.associations": {
+        "justfile": "just"
+    }
+}

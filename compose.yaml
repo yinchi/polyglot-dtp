@@ -1,0 +1,8 @@
+include:
+  - ./infra/phppgadmin/compose.include.yaml
+  - ./pypackages/twins_test/compose.include.yaml
+
+networks:
+  default:
+    name: polyglot-dtp-net
+    driver: bridge

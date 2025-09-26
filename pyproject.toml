@@ -1,0 +1,26 @@
+[project]
+name = "polyglot-dtp"
+version = "0.1.0"
+description = "Modular Digital Twin Platform"
+readme = "README.md"
+requires-python = "==3.13.*"
+authors = [
+    { name = "Yin-Chi Chan", email = "ycc39@cam.ac.uk" },
+    { name = "Anandarup Mukherjee", email = "am2910@cam.ac.uk" }
+]
+dependencies = []
+license-files = ["LICEN[CS]E*", "COPYRIGHT*"]
+
+[project.urls]
+Repository = "https://github.com/yinchi/polyglot-dtp"
+
+[tool.uv.workspace]
+members = [
+    "pypackages/*",
+    "pytests",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.2",
+]

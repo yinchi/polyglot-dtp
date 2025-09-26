@@ -1,0 +1,12 @@
+services:
+  twins-test:
+    build:
+      context: ../../
+      dockerfile: pypackages/twins_test/Dockerfile
+    container_name: polyglot-dtp-twins-test
+    environment:
+      - TWIN_TEST_FOO=${TWIN_TEST_FOO:-default_foo}
+    networks:
+      - default
+    ports:
+      - "8000:8000"
