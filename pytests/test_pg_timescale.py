@@ -125,7 +125,7 @@ def test_timescale():
             result = cur.fetchone()
             print("Inserted signal:", result)
             assert result is not None and len(result) == 3, "Failed to insert signal"
-            assert result[0] == signal.signal_id, "Signal ID mismatch"
+            assert result[0] == signal.signal_id, "Signal UUID mismatch"
 
     # Insert some observations for the signal
     with psycopg.connect(str(settings.dsn)) as conn:
@@ -172,7 +172,9 @@ def test_timescale():
                     obs_df, headers="keys", tablefmt="simple_outline", showindex=False
                 )
             )
-            assert len(result) == 5, "Unexpected number of observations"
+            assert len(result) == 5, (
+                f"Unexpected number of observations ({len(result)}), should be 5"
+            )
 
     # Cleanup
     with psycopg.connect(str(settings.dsn)) as conn:
@@ -183,13 +185,12 @@ def test_timescale():
                     (signal.signal_id,),
                 )
                 print(f"Deleted {cur.rowcount} observations for signal ID: {signal.signal_id}")
+                assert cur.rowcount == 5, (
+                    f"Unexpected number of deleted observations ({cur.rowcount}), should be 5"
+                )
                 cur.execute(
                     "DELETE FROM signal WHERE signal_id = %s;",
                     (signal.signal_id,),
                 )
                 assert cur.rowcount == 1, "Failed to delete the signal"
                 print(f"Deleted signal with ID: {signal.signal_id}")
-
-
-if __name__ == "__main__":
-    test_timescale()
