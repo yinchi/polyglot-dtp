@@ -17,7 +17,7 @@ SILENT_ENDPOINTS = {f"{ROOT_PATH}{ep}" for ep in SILENT_ENDPOINTS}
 
 class LogFilter(logging.Filter):
     """Filter out log messages from silent endpoints.
-    
+
     See: https://dev.to/mukulsharma/taming-fastapi-access-logs-3idi
     """
 
