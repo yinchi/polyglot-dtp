@@ -46,3 +46,8 @@ For example, to launch the Docker Compose stack, use `just docker-up` or its ali
 
 - Use `just uv-sync` to sync the virtual environment, including all packages in the workspace.
 - Use `just ruff` to format and lint the Python code.  Only `pytests/` and `pypackages/` will be checked.
+
+## Docker images
+
+The project is set up to push images to Docker Hub.  Use `docker login` to login to Docker Hub
+if necessary.  The images for this project can be found at <https://hub.docker.com/u/yinchi>.

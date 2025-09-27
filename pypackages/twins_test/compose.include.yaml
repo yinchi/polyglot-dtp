@@ -2,6 +2,8 @@
 
 services:
   twins-test:
+    image: yinchi/polyglot-dtp-twins-test:latest
+    pull_policy: always
     build:
       context: ../../
       dockerfile: pypackages/twins_test/Dockerfile
