@@ -3,6 +3,15 @@ include:
   - ./infra/postgres/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
 
+# Additional services are defined in the included compose files.
+# To list all defined servcies, networks, or volumes, run:
+#    docker compose config | yq '.services | keys'
+#    docker compose config | yq '.networks'
+#    docker compose config | yq '.volumes'
+# To see the configuration for a specific service, run:
+#    docker compose config | yq '.services.<service_name>'
+# To see the full merged configuration, run:
+#    docker compose config | yq
 services:
   traefik:
     image: traefik:3.5
@@ -23,6 +32,7 @@ services:
       retries: 5
       start_period: 30s
 
+# Default network for all services
 networks:
   default:
     name: polyglot-dtp-net
