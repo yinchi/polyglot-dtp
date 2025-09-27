@@ -1,7 +1,7 @@
 # Parent compose file: $(git root)/compose.yaml
 
 # Exposes a Neo4j graph database on port 7687 (Bolt)
-# and its HTTP interface at http://neo4j.localhost (via Traefik).
+# and its HTTP interface at http://localhost:7474.
 
 services:
   neo4j:
@@ -16,6 +16,12 @@ services:
       - default
     volumes:
       - neo4jdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "neo4j status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   neo4jdata:
