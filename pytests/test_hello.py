@@ -2,6 +2,12 @@
 
 The failing test is marked as expected to fail (xfail) with strict mode enabled; thus,
 if it unexpectedly passes, the test suite will fail.
+
+To run this test suite individually:
+    just pytest hello
+
+To run all tests:
+    just pytests
 """
 
 import pytest

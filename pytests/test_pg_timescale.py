@@ -1,10 +1,10 @@
 """Tests for manipulating and querying a Postgres database with the TimescaleDB extension.
 
-To run this test individually (from the Git root):
-    uv run pytest -s pytests/test_pg_timescale.py
+To run this test suite individually:
+    just pytest pg_timescale
 
 To run all tests:
-    just pytest
+    just pytests
 """
 
 import random
