@@ -1,5 +1,7 @@
-name: PostgreSQL+TimescaleDB
-image: timescale/timescaledb:latest-pg17
+name: timescaledb
+image:
+  - timescale/timescaledb:latest-pg17
+  - polyglot-dtp-phppgadmin:latest
 description: PostgreSQL database with TimescaleDB extension
 urls:
   phppgadmin:
@@ -8,4 +10,3 @@ urls:
   postgres:
     url: postgresql://dtp@localhost:5432/dtp
     description: PostgreSQL database connection string
-  

@@ -12,6 +12,15 @@ default:
 
 
 #################################
+## DT platform config files
+#################################
+
+# Display all infra.yaml files in the project directory
+infra:
+    #!/usr/bin/env bash
+    yq eval-all '[.] | sort_by(.name)' $(find infra/ -name infra.yaml)
+
+#################################
 ## Kubernetes
 #################################
 
@@ -45,7 +54,7 @@ k8s-delete:
 # Build containers
 docker-build:
     #!/usr/bin/env bash
-    docker compose -f compose.yaml --env-file .env build
+    docker compose -f compose.yaml --env-file .env build --push --no-cache
 
 # Start all services defined in compose.yaml
 docker-up:
