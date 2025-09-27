@@ -2,6 +2,7 @@ include:
   # Use `find -name compose.include.yaml` to locate and include other compose files.
   - ./infra/postgres/compose.include.yaml
   - ./infra/neo4j/compose.include.yaml
+  - ./infra/influx/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
 
 # Additional services are defined in the included compose files.

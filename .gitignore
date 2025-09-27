@@ -7,7 +7,7 @@
 *.key
 *.pem
 *.crt
-secret/*
+*secret*/
 
 # Python
 __pycache__/

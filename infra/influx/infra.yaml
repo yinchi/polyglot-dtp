@@ -1,0 +1,11 @@
+name: influx
+image:
+  - influxdb:3-core
+description: InfluxDB time series database
+urls:
+  influxdb:
+    url: http://localhost:8181
+    description: InfluxDB API and web interface
+  influxdb-explorer:
+    url: http://influxui.localhost
+    description: InfluxDB Explorer

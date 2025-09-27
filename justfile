@@ -247,6 +247,40 @@ pgcli:
 
 alias pg := pgcli
 
+# Create the admin token file for InfluxDB (used only if no tokens exist in the DB)
+influx-token:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Create secret directory if it does not exist
+    mkdir -p infra/influx/secret
+
+    # Check if the token file already exists
+    if [[ -f infra/influx/secret/admin_token.json ]]; then
+        echo "❌   Token file infra/influx/secret/admin_token.json already exists."
+        echo "    If you want to create a new token, please delete the existing file first."
+        exit 1
+    fi
+
+    # Generate a new admin token using a temporary InfluxDB container.
+    # Note that we do not copy the token to .env, as it is only used during initial setup.
+    # The token in .env is the actual token used by applications to connect to InfluxDB,
+    # which may be different from the initial admin token.
+    echo "🛠️   Generating new admin token..."
+    docker run -it --rm --name influx-token-gen -p 8181 influxdb:3-core \
+        sh -c "influxdb3 create token --admin --offline --output-file /home/influxdb3/admin_token.json && cat /home/influxdb3/admin_token.json" \
+        | tail -n 4 > infra/influx/secret/admin_token.json
+    echo "🛠️   Setting file permissions for the new admin token..."
+    sudo chown 1500:1500 infra/influx/secret/admin_token.json
+    echo "✅  Created token file infra/influx/secret/admin_token.json."
+    echo "🔐  Keep this file safe! It contains the admin token for InfluxDB."
+
+# Command-line interface to InfluxDB
+influx +command:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    docker compose exec influx influxdb3 {{command}}
+
 
 #################################
 ## Miscellaneous

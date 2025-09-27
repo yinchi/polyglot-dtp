@@ -1,0 +1,65 @@
+# Parent compose file: $(git root)/compose.yaml
+
+# Exposes an InfluxDB 3.x database on port 8181.
+
+services:
+  influx:
+    image: influxdb:3-core
+    container_name: polyglot-dtp-influx
+    environment:
+      # See https://docs.influxdata.com/influxdb3/core/reference/config-options/
+      - INFLUXDB3_NODE_IDENTIFIER_PREFIX=node0
+      - INFLUXDB3_DB_DIR=/var/lib/influxdb3
+      - INFLUXDB3_OBJECT_STORE=file
+      - INFLUXDB3_ADMIN_TOKEN_FILE=/home/influxdb3/admin_token.json
+      - INFLUXDB3_AUTH_TOKEN=${INFLUXDB3_AUTH_TOKEN}
+    networks:
+      - default
+    ports:
+      - "8181:8181"
+    volumes:
+      - influxdata:/var/lib/influxdb3
+    configs:
+      # NOTE: File must have UID/GID 1500:1500 (influxdb3 user in the container).
+      - source: admin_token
+        target: /home/influxdb3/admin_token.json
+    healthcheck:
+      test: ["CMD-SHELL", "influxdb3 --version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  influx-ui:
+    image: influxdata/influxdb3-ui:latest
+    container_name: polyglot-dtp-influx-ui
+    command:
+      - --mode=admin
+    networks:
+      - default
+    volumes:
+      - influxuidata:/db:rw
+    environment:
+      SESSION_SECRET_KEY: ${SESSION_SECRET_KEY:-changeme123456789012345678901234}
+    depends_on:
+      influx:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.influxui.rule=Host(`influxui.localhost`)
+      - traefik.http.routers.influxui.entrypoints=web
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/system-overview"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+configs:
+  admin_token:
+    file: ./secret/admin_token.json
+
+volumes:
+  influxdata:
+    name: polyglot-dtp_influxdata
+  influxuidata:
+    name: polyglot-dtp_influxuidata
