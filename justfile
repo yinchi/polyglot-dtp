@@ -20,6 +20,11 @@ infra:
     #!/usr/bin/env bash
     yq eval-all '[.] | sort_by(.name)' $(find infra/ -name infra.yaml)
 
+# List all infra.yaml files in the project directory
+infra-find:
+    #!/usr/bin/env bash
+    find infra/ -name infra.yaml
+
 #################################
 ## Kubernetes
 #################################
