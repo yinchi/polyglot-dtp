@@ -1,7 +1,7 @@
 name: timescaledb
 image:
   - timescale/timescaledb:latest-pg17
-  - polyglot-dtp-phppgadmin:latest
+  - yinchi/polyglot-dtp-phppgadmin:latest
 description: PostgreSQL database with TimescaleDB extension
 urls:
   phppgadmin:
