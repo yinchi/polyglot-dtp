@@ -178,10 +178,21 @@ uv-sync:
 
 alias uvs := uv-sync
 
-# Python tests
-pytest:
+# Run all tests in the pytests/ directory
+pytests:
     #!/usr/bin/env bash
     uv run pytest pytests/
+
+# Run a specific test file in the pytests/ directory, or list (ls) available tests
+pytest test_name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [[ "{{test_name}}" == "ls" ]]; then
+        cd pytests
+        ls test_*.py | sed 's/^test_//;s/\.py//'
+    else
+        uv run pytest -s pytests/test_{{test_name}}.py
+    fi
 
 # Format and lint with Ruff
 ruff:

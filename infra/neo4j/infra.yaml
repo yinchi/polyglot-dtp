@@ -1,0 +1,10 @@
+name: Neo4j
+image: neo4j:5-community
+description: Neo4j graph database
+urls:
+  - name: http
+    url: http://localhost:7474
+    description: Neo4j HTTP interface
+  - name: bolt
+    url: bolt://localhost:7687
+    description: Neo4j Bolt interface
