@@ -1,3 +1,4 @@
+-- A simple event log database table that does not rely on the TimescaleDB extension.
 CREATE TABLE IF NOT EXISTS event_log(
     id BIGSERIAL PRIMARY KEY,
     ts TIMESTAMPTZ NOT NULL DEFAULT NOW(),
