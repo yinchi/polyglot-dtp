@@ -1,0 +1,22 @@
+# Parent compose file: $(git root)/compose.yaml
+
+# Exposes a Neo4j graph database on port 7687 (Bolt)
+# and its HTTP interface at http://neo4j.localhost (via Traefik).
+
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: polyglot-dtp-neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-dtpsecret1}
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - default
+    volumes:
+      - neo4jdata:/data
+
+volumes:
+  neo4jdata:
+    name: polyglot-dtp_neo4jdata

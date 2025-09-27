@@ -20,6 +20,20 @@ else
     echo
 fi
 
+# Add Neo4j repository (for cypher-shell)
+echo "🛠️  Adding Neo4j APT repository for cypher-shell..."
+sudo mkdir -p /etc/apt/keyrings
+if ! apt-cache search cypher-shell | awk '{print $1}' | grep '^cypher-shell' -q; then
+    curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/neo4j.gpg > /dev/null
+    echo 'deb [signed-by=/etc/apt/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest' | sudo tee /etc/apt/sources.list.d/neo4j.list
+    sudo chmod 644 /etc/apt/keyrings/neo4j.gpg
+    echo "✅  Added Neo4j repository."
+else
+    echo "✅  Found cypher-shell in the APT cache, skipping repository addition."
+fi
+echo
+
+# Update package lists
 echo "🛠️  Updating package lists..."
 sudo apt-get update -qq
 echo
@@ -33,7 +47,7 @@ sudo apt-get install -yqo APT::Get::HideAutoRemove=1 \
     python3 python3-click \
     kubecolor \
     jq \
-    pgcli
+    pgcli cypher-shell
 echo
 
 # Check global Git configuration for user.name and user.email
