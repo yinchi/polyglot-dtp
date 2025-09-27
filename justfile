@@ -18,6 +18,8 @@ default:
 # Create a new minikube profile 'dtp' if it doesn't already exist, and switch to it
 k8s-create:
     #!/usr/bin/env bash
+    set -euo pipefail
+
     echo "🛠️  Checking for minikube profile 'dtp'..."
     if ! minikube profile list -o json | jq .valid[].Name | grep '^"dtp"$' &> /dev/null; then
         echo "Creating new minikube profile 'dtp'..."
@@ -83,6 +85,8 @@ docker-clean:
 # List published Docker ports
 docker-ports:
     #!/usr/bin/env bash
+    set -euo pipefail
+
     # Start output buffer
     output=""
 
@@ -105,6 +109,7 @@ docker-ports:
     done < <(docker ps --format '{{{{.Names}}')
 
     # Output formatted table; exclude IPv6 mappings
+    echo
     echo "$output" | column -t | grep -v --fixed '[::]'
 
 alias dkb := docker-build
@@ -124,6 +129,43 @@ compose-find:
 dockerfile-find:
     #!/usr/bin/env bash
     find . -type f -name '*Dockerfile*'
+
+
+#################################
+## Traefik
+#################################
+
+# Show Traefik routing tables
+traefik-routes:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    SEGMENTS=(
+        '. | filter(.name | contains("@internal") | not)'
+        '| sort_by(.priority)'
+        '| reverse'
+        '| .[]'
+        '|= pick(["rule", "entryPoints", "priority", "service", "middlewares"])'
+    )
+    MYSTRING=$(IFS=' '; echo "${SEGMENTS[*]}")
+
+    echo
+
+    echo "HTTP(S) Routes:"
+    curl -fsSL http://localhost:8080/api/http/routers | yq -p=json "$MYSTRING"
+
+    echo
+
+    echo "TCP Routes:"
+    curl -fsSL http://localhost:8080/api/tcp/routers | yq -p=json "$MYSTRING"
+
+    echo
+
+    echo "UDP Routes:"
+    curl -fsSL http://localhost:8080/api/udp/routers | yq -p=json "$MYSTRING"
+
+alias tfk := traefik-routes
+
 
 #################################
 ## Python
