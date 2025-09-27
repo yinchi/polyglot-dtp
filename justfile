@@ -115,6 +115,15 @@ alias dkps := docker-ps
 alias dklogs := docker-logs
 alias dkp := docker-ports
 
+# Find compose files in the project directory
+compose-find:
+    #!/usr/bin/env bash
+    find . -type f -name '*compose*.yaml'
+
+# Find Dockerfiles in the project directory
+dockerfile-find:
+    #!/usr/bin/env bash
+    find . -type f -name '*Dockerfile*'
 
 #################################
 ## Python
@@ -140,6 +149,11 @@ ruff:
     echo "🛠️  Linting .py files..."
     uv run ruff check --config ruff.toml --fix pytests/ pypackages/
     echo "Done!"
+
+# Find all pyproject.toml files
+pyprojects:
+    #!/usr/bin/env bash
+    find . -name 'pyproject.toml' -not -path '*.venv*';
 
 
 #################################
@@ -175,3 +189,8 @@ alias pg := pgcli
 gen-pass:
     #!/usr/bin/env bash
     openssl rand -base64 18 | tr '+/' '-_'
+
+# Find all README files
+readmes:
+    #!/usr/bin/env bash
+    find . -type f -iname '*README*' -not -path '*.venv*' -not -path '*cache*'
