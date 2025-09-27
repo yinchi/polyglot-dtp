@@ -71,12 +71,49 @@ docker-logs:
     #!/usr/bin/env bash
     docker compose -p polyglot-dtp logs -f -t --tail=100
 
+# Clean up unused Docker resources
+docker-clean:
+    #!/usr/bin/env bash
+    docker image prune --filter "dangling=true"
+    docker container prune
+    docker volume prune --filter "label=com.docker.volume.anonymous=true"
+    docker network prune
+    docker builder prune
+
+# List published Docker ports
+docker-ports:
+    #!/usr/bin/env bash
+    # Start output buffer
+    output=""
+
+    # Header + underline
+    header="CONTAINER_NAME CONTAINER_PORT HOST_MAPPING"
+    underline="-------------- -------------- ------------"
+    output+="$header"$'\n'
+    output+="$underline"$'\n'
+
+    # NOTE: justfile needs 4 braces to escape to 2 braces in the final output, but
+    # only for the opening brace pair.
+
+    # Get port mappings for each running container
+    while read -r name; do
+    while read -r mapping; do
+        container_port=$(echo "$mapping" | cut -d' ' -f1)
+        host_mapping=$(echo "$mapping" | cut -d' ' -f3)
+        output+="$name $container_port $host_mapping"$'\n'
+    done < <(docker port "$name")
+    done < <(docker ps --format '{{{{.Names}}')
+
+    # Output formatted table; exclude IPv6 mappings
+    echo "$output" | column -t | grep -v --fixed '[::]'
+
 alias dkb := docker-build
 alias dkup := docker-up
 alias dkdown := docker-down
 alias dkrm := docker-rm
 alias dkps := docker-ps
 alias dklogs := docker-logs
+alias dkp := docker-ports
 
 
 #################################
