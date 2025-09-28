@@ -10,20 +10,19 @@ To run all tests:
     just pytests
 """
 
-import pytest
+import logging
 
-# We use \n\n in print statements to ensure clear separation in pytest output, e.g.,
-# when using `pytest -s`.
+import pytest
 
 
 def test_always_pass():
     """A test that always passes."""
-    print("\n\nThis test always passes.")
+    logging.info("This test always passes.")
     assert True
 
 
 @pytest.mark.xfail(strict=True)
 def test_always_fail():
     """A test that is expected to fail."""
-    print("\n\nThis test always fails, as expected.")
+    logging.info("This test always fails, as expected.")
     assert False

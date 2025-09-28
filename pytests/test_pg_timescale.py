@@ -7,9 +7,10 @@ To run all tests:
     just pytests
 """
 
+import logging
+import pprint
 import random
 from datetime import datetime, timedelta, timezone
-from pprint import pprint
 from uuid import UUID, uuid4
 
 import pandas as pd
@@ -83,9 +84,10 @@ def test_timescale():
     settings = Settings(
         _env_file=env_path,
     )
-    print("Settings:")
-    pprint(settings.model_dump(mode="json"), sort_dicts=False)
-    print()
+    logging.info("Settings:")
+    for line in pprint.pformat(settings.model_dump(mode="json"), sort_dicts=False).splitlines():
+        logging.info("   %s", line)
+    logging.info("")
 
     # Connect to the database and check TimescaleDB extension
     with psycopg.connect(str(settings.dsn)) as conn:
@@ -96,7 +98,7 @@ def test_timescale():
             assert len(version) == 1, "Unexpected result from TimescaleDB version query"
             version = version[0]
             assert isinstance(version, str) and len(version) > 0, "Invalid TimescaleDB version"
-            print(f"TimescaleDB version: {version}")
+            logging.info("TimescaleDB version: %s", version)
 
     # Create a new signal
     signal = Signal(
@@ -123,7 +125,7 @@ def test_timescale():
                 (signal.signal_id,),
             )
             result = cur.fetchone()
-            print("Inserted signal:", result)
+            logging.info("Inserted signal: %s", result)
             assert result is not None and len(result) == 3, "Failed to insert signal"
             assert result[0] == signal.signal_id, "Signal UUID mismatch"
 
@@ -163,15 +165,14 @@ def test_timescale():
                 (signal.signal_id,),
             )
             result = cur.fetchall()
-            print("Inserted observations (with left join):")
+            logging.info("Inserted observations (with left join):")
             obs_df = pd.DataFrame(
                 result, columns=["signal_id", "ts", "name", "value_double", "unit", "source"]
             )
-            print(
-                tabulate.tabulate(
-                    obs_df, headers="keys", tablefmt="simple_outline", showindex=False
-                )
-            )
+            for line in tabulate.tabulate(
+                obs_df, headers="keys", tablefmt="simple_outline", showindex=False
+            ).splitlines():
+                logging.info("   %s", line)
             assert len(result) == 5, (
                 f"Unexpected number of observations ({len(result)}), should be 5"
             )
@@ -184,7 +185,9 @@ def test_timescale():
                     "DELETE FROM observation WHERE signal_id = %s;",
                     (signal.signal_id,),
                 )
-                print(f"Deleted {cur.rowcount} observations for signal ID: {signal.signal_id}")
+                logging.info(
+                    "Deleted %d observations for signal ID: %s", cur.rowcount, signal.signal_id
+                )
                 assert cur.rowcount == 5, (
                     f"Unexpected number of deleted observations ({cur.rowcount}), should be 5"
                 )
@@ -193,4 +196,4 @@ def test_timescale():
                     (signal.signal_id,),
                 )
                 assert cur.rowcount == 1, "Failed to delete the signal"
-                print(f"Deleted signal with ID: {signal.signal_id}")
+                logging.info("Deleted signal with ID: %s", signal.signal_id)

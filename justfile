@@ -195,7 +195,7 @@ alias uvs := uv-sync
 # Run all tests in the pytests/ directory
 pytests:
     #!/usr/bin/env bash
-    uv run pytest pytests/
+    uv run pytest --log-level=INFO --log-file=pytests/logs/pytest_$(date -Iseconds).log pytests/
 
 # Run a specific test file in the pytests/ directory, or list (ls) available tests
 pytest test_name:
@@ -205,7 +205,8 @@ pytest test_name:
         cd pytests
         ls test_*.py | sed 's/^test_//;s/\.py//'
     else
-        uv run pytest -s pytests/test_{{test_name}}.py
+        uv run pytest --log-cli-level=INFO --log-level=INFO \
+            --log-file=pytests/logs/pytest_$(date -Iseconds).log pytests/test_{{test_name}}.py
     fi
 
 # Format and lint with Ruff

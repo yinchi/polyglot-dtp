@@ -7,6 +7,7 @@ To run all tests:
     just pytest
 """
 
+import logging
 from datetime import datetime, timezone
 
 import influxdb_client_3 as influx
@@ -26,7 +27,7 @@ def test_influxdb():
 
     ts = int(datetime.now(timezone.utc).timestamp() * 1_000_000_000)  # timestamp in nanoseconds
     line = f"test val=1 {ts}"
-    print(line)
+    logging.info(line)
 
     client.write(
         record=line,
@@ -41,6 +42,9 @@ def test_influxdb():
         "LIMIT 1"
     )
     df = table.to_pandas()
-    print(tabulate.tabulate(df, headers="keys", tablefmt="simple_outline", showindex=False))
+    for line in tabulate.tabulate(
+        df, headers="keys", tablefmt="simple_outline", showindex=False
+    ).splitlines():
+        logging.info("%s", line)
 
     assert not df.empty
