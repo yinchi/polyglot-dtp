@@ -1,11 +1,10 @@
 name: neo4j
-image:
-  - neo4j:5-community
 description: Neo4j graph database
-urls:
-  http:
-    url: http://localhost:7474
-    description: Neo4j HTTP interface
-  bolt:
-    url: bolt://localhost:7687
-    description: Neo4j Bolt interface
+services:
+  - name: neo4j
+    image: neo4j:5-community
+    urls:
+      - address: http://localhost:7474
+        description: Neo4j HTTP interface
+      - address: bolt://localhost:7687
+        description: Neo4j Bolt interface

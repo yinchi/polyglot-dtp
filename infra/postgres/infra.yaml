@@ -1,12 +1,13 @@
 name: postgres
-image:
-  - timescale/timescaledb:latest-pg17
-  - yinchi/polyglot-dtp-phppgadmin:latest
 description: PostgreSQL database with TimescaleDB extension
-urls:
-  phppgadmin:
-    url: http://pgadmin.localhost
-    description: phpPgAdmin web interface
-  postgres:
-    url: postgresql://dtp@localhost:5432/dtp
-    description: PostgreSQL database connection string
+services:
+  - name: postgres
+    image: timescale/timescaledb:latest-pg17
+    urls:
+      - address: postgresql://dtp@localhost:5432/dtp
+        description: PostgreSQL database connection string
+  - name: phppgadmin
+    image: yinchi/polyglot-dtp-phppgadmin:latest
+    urls:
+      - address: http://pgadmin.localhost
+        description: phpPgAdmin web interface
