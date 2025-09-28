@@ -22,3 +22,9 @@ __pycache__/
 # Logs
 *.log
 logs/
+
+# Scratch files
+scratch/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
