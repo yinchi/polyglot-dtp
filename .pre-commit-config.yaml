@@ -1,0 +1,42 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-toml
+  - id: check-yaml
+    args: [--allow-multiple-documents]
+
+# Apply Ruff for Python linting and formatting.
+# Uses `ruff.toml` at the project root for configuration.  Edit the ignore rules as needed.
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.13.2
+  hooks:
+  # Run the linter.
+  - id: ruff-check
+    types_or: [ python, pyi ]
+    args: [ --fix ]
+  # Run the formatter.
+  - id: ruff-format
+    types_or: [ python, pyi ]
+
+# Format and lint Node.js code with Biome.
+# Uses .biome.json at the project root for configuration.
+# Use "off" to disable rules as needed (e.g. for Vite's react-ts template).
+- repo: https://github.com/biomejs/pre-commit
+  rev: v2.2.4 # Use the sha / tag you want to point at
+  hooks:
+    - id: biome-check
+      files: ^nodejs/
+
+# Run all tests in the pytests/ directory using just.
+- repo: local
+  hooks:
+  - id: pytest-all
+    name: Run pytest on all tests using the justfile entry.
+    entry: just pytests
+    language: system
+    stages: [push]
+    pass_filenames: false

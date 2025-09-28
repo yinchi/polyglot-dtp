@@ -16,6 +16,10 @@ __pycache__/
 *.pyc
 .venv/
 
+# Yarn / Node.js
+# Note Yarn sets up its own .gitignore, so leave this section blank for now.
+
+
 # MacOS
 .DS_Store
 

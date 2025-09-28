@@ -44,6 +44,7 @@ sudo apt-get install -yqo APT::Get::HideAutoRemove=1 \
     git \
     curl wget \
     just \
+    pre-commit \
     python3 python3-click \
     kubecolor \
     jq \

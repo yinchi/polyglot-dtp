@@ -1,0 +1,12 @@
+{
+  "linter": {
+    "rules": {
+      "a11y": {
+        "useButtonType": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      }
+    }
+  }
+}

@@ -5,8 +5,8 @@ This template module contains a `uv` project representing a dummy digital twin m
 **To launch locally:**
 ```bash
 cd $(git root)
-chmod +x pypackages/twins_test/launch.sh 
-./pypackages/twins_test/launch.sh 
+chmod +x pypackages/twins_test/launch.sh
+./pypackages/twins_test/launch.sh
 ```
 
 This exposes the FastAPI app at <http://localhost:8000>.  Auto-generated documentation is available at <http://localhost:8000/docs>.
