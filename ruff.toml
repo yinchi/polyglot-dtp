@@ -56,7 +56,9 @@ select = [
     "Q", "RET", "RSE"  # flake8
 ]
 ignore = [
-    "PLR0911", "PLR2004"
+    "PLR0913",
+    "PLR2004",
+    "D107"
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
