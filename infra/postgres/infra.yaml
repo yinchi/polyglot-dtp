@@ -1,4 +1,4 @@
-name: timescaledb
+name: postgres
 image:
   - timescale/timescaledb:latest-pg17
   - yinchi/polyglot-dtp-phppgadmin:latest
