@@ -1,11 +1,18 @@
 """Test reading data from infra.yaml, with injected password from .env."""
 
-import logging
+from typing import Callable, TypeVar
 
 import git
 import yaml
 from dotenv import dotenv_values
 from pydantic import PostgresDsn, ValidationError
+
+T = TypeVar("T")
+
+
+def find(fn: Callable[[T], bool], lst: list[T]):
+    """Find the first element in lst that satisfies the predicate fn."""
+    return next(filter(fn, lst), None)
 
 
 def test_read_infra_yaml():
@@ -21,10 +28,12 @@ def test_read_infra_yaml():
     assert password is not None, "POSTGRES_PASSWORD not found in .env file"
 
     try:
-        dsn = PostgresDsn(config["urls"]["postgres"]["url"])
+        dsn = PostgresDsn(
+            find(lambda s: s["name"] == "postgres", config["services"])["urls"][0]["address"]
+        )
         dsn = PostgresDsn.build(scheme=dsn.scheme, **(dsn.hosts()[0] | {"password": password}))
-        logging.info("Postgres DSN with injected password: %s", dsn)
+        print("Postgres DSN with injected password: %s", dsn)
     except KeyError as e:
-        raise KeyError("Missing key: config['urls']['postgres']['url']") from e
+        raise KeyError("Cannot find Postgres service configuration") from e
     except ValidationError as e:
         raise ValueError(f"Invalid Postgres DSN: {e}") from e
