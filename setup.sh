@@ -83,6 +83,12 @@ fi
 echo "✅  Git aliases added."
 echo
 
+# Install pre-commit hooks
+echo "🛠️  Installing pre-commit hooks..."
+pre-commit install -t pre-commit -t pre-push
+echo "✅  Pre-commit hooks installed."
+echo
+
 # Install required snap packages
 echo "🛠️  Installing required packages (snap)..."
 sudo snap refresh
@@ -106,7 +112,7 @@ if ! ( \
     echo "script again."
     exit 1  # Exit to allow user to re-login for Docker group changes
 else
-    echo "Docker is already installed."
+    echo "✅  Docker is already installed."
     docker --version
     docker buildx version
     docker compose version
@@ -116,7 +122,7 @@ fi
 # Check for lazydocker (a terminal UI for Docker)
 echo "🛠️  Installing or upgrading lazydocker..."
 curl -fsSL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-echo "lazydocker installed."
+echo "✅  lazydocker installed."
 lazydocker --version
 echo
 
@@ -128,9 +134,9 @@ if ! minikube version &> /dev/null; then
         -o minikube_latest_amd64.deb
     sudo dpkg -i minikube_latest_amd64.deb
     rm minikube_latest_amd64.deb
-    echo "minikube installed."
+    echo "✅  minikube installed."
 else
-    echo "minikube is already installed."
+    echo "✅  minikube is already installed."
 fi
 minikube version
 echo
@@ -140,7 +146,7 @@ echo "🛠️  Installing or upgrading k9s..."
 curl -fsSLO https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
 sudo dpkg -i k9s_linux_amd64.deb
 rm k9s_linux_amd64.deb
-echo "k9s installed."
+echo "✅  k9s installed."
 k9s version --short
 echo
 
@@ -149,9 +155,9 @@ echo "🛠️  Checking for uv (Python package management)..."
 if ! uv self version &> /dev/null; then
     echo "uv not found. Installing uv..."
     curl -fsSL https://astral.sh/uv/install.sh | bash
-    echo "uv installed."
+    echo "✅  uv installed."
 else
-    echo "uv is already installed."
+    echo "✅  uv is already installed."
 fi
 uv self version
 echo
