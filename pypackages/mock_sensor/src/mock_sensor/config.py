@@ -13,11 +13,6 @@ class AuthSettings(BaseSettings):
     mqtt_password: str | None = None
     """An optional password for MQTT authentication."""
 
-    influx_token: str | None = None
-    """The authentication token for InfluxDB.  If InfluxDB output is enabled and this
-    is not set, an error will be raised.
-    """
-
     model_config = SettingsConfigDict(
         extra="ignore",
         env_prefix="SENSOR_AUTH_",
@@ -74,8 +69,8 @@ class MQTTConfig(BaseModel):
     ```
     """
 
-    hostname: str = Field(default="test.mosquitto.org")
-    """Host name of the MQTT broker. Defaults to "test.mosquitto.org"."""
+    hostname: str = Field(default="localhost")
+    """Host name of the MQTT broker. Defaults to "localhost"."""
 
     port: int = Field(default=1883)
     """The port of the MQTT broker. Defaults to 1883."""
@@ -83,21 +78,6 @@ class MQTTConfig(BaseModel):
     topic_prefix: str = Field(default="sensors/mock")
     """The topic prefix to use when publishing metrics.  Each metric appends its name to this
     prefix. Defaults to `sensors/mock`.
-    """
-
-
-class InfluxConfig(BaseModel):
-    """Configuration for InfluxDB client."""
-
-    url: str = Field(default="http://localhost:8181")
-    """The URL of the InfluxDB server.  Defaults to "http://localhost:8181"."""
-
-    database: str = Field(default="dtp")
-    """The InfluxDB database to write metrics to.  Defaults to "dtp"."""
-
-    measurement_prefix: str = Field(default="mock_sensor")
-    """The measurement name is formed by appending the sensor name to this prefix.
-    Defaults to `mock_sensor`.
     """
 
 
@@ -127,14 +107,11 @@ class SensorConfig(BaseModel):
     mqtt_config: MQTTConfig | None = Field(default=None)
     """An optional MQTT client to publish metrics to."""
 
-    influx_config: InfluxConfig | None = Field(default=None)
-    """An optional InfluxDB client to write metrics to."""
-
     interval: float = Field(default=30.0, gt=0)
     """The interval (in seconds) between metric generations."""
 
 
-def example_config(name: str, mqtt: bool = False, influx: bool = False) -> SensorConfig:
+def example_config(name: str, mqtt: bool = False) -> SensorConfig:
     """Return an example configuration for the mock sensor."""
     return SensorConfig(
         name=name,
@@ -160,6 +137,5 @@ def example_config(name: str, mqtt: bool = False, influx: bool = False) -> Senso
             ),
         ],
         mqtt_config=MQTTConfig() if mqtt else None,  # Use default MQTT settings
-        influx_config=InfluxConfig() if influx else None,  # Use default InfluxDB settings
         interval=30.0,
     )

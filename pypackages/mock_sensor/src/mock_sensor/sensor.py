@@ -3,12 +3,10 @@
 import json
 import logging
 import random
-from time import time
+from time import sleep, time
 from typing import Iterator
 
-import influxdb_client_3 as influx
 import paho.mqtt.client as mqtt
-from influxdb_client_3 import WritePrecision
 
 from .config import AuthSettings, MetricConfig, SensorConfig
 
@@ -85,24 +83,22 @@ class MockSensor:
         self.mqtt_config = config.mqtt_config
         """An optional MQTT client to publish metrics to."""
 
-        self.influx_config = config.influx_config
-        """An optional InfluxDB client to write metrics to."""
-
         self.interval = config.interval
         """The interval (in seconds) between metric generations."""
 
         self.mqtt_client = None
-        self.influx_client = None
-
-        if self.influx_config:
-            assert auth_settings.influx_token, "InfluxDB token is required"
-
         self.mqtt_topic: str | None = None
-        self.influx_measurement_name: str | None = None
         self.metrics = [Metric(cfg) for cfg in self.metric_configs]
 
         if self.mqtt_config:
             self.mqtt_topic = f"{self.mqtt_config.topic_prefix}/{self.name}"
+
+            logging.info(
+                "Publishing to MQTT broker %s:%d, topic %s",
+                self.mqtt_config.hostname,
+                self.mqtt_config.port,
+                self.mqtt_topic,
+            )
 
             # Set up MQTT client
             self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -110,21 +106,16 @@ class MockSensor:
                 self.mqtt_client.username_pw_set(
                     auth_settings.mqtt_username, auth_settings.mqtt_password
                 )
-
-        if self.influx_config:
-            self.influx_measurement_name = f"{self.influx_config.measurement_prefix}_{self.name}"
-
-            # Set up InfluxDB client
-            self.influx_client = influx.InfluxDBClient3(
-                host=self.influx_config.url,
-                token=auth_settings.influx_token,
-                database=self.influx_config.database,
-            )
+        else:
+            logging.info("Publishing to MQTT broker disabled.")
+        logging.info("")
+        logging.info("")
 
     def run(self):
         """Run the mock sensor, publishing metrics to MQTT and/or InfluxDB."""
-        self.mqtt_client.connect(self.mqtt_config.hostname, self.mqtt_config.port)
-        self.mqtt_client.loop_start()
+        if self.mqtt_client:
+            self.mqtt_client.connect(self.mqtt_config.hostname, self.mqtt_config.port)
+            self.mqtt_client.loop_start()
 
         try:
             while True:
@@ -132,7 +123,7 @@ class MockSensor:
 
                 # Generate metric values
                 values = {"timestamp": timestamp} | {
-                    metric.name: metric() for metric in self.metrics
+                    metric.config.name: metric() for metric in self.metrics
                 }
 
                 json_payload = json.dumps(values)
@@ -144,16 +135,7 @@ class MockSensor:
                     # Publish to MQTT
                     self.mqtt_client.publish(self.mqtt_topic, json_payload)
 
-                if self.influx_client:
-                    # Write to InfluxDB
-                    point = influx.Point(self.influx_measurement_name)
-                    for key, value in values.items():
-                        if key == "timestamp":
-                            continue
-                        point = point.field(key, value)
-                    point = point.time(timestamp, write_precision=WritePrecision.NS)
-                    self.influx_client.write(record=point, precision=WritePrecision.NS)
-                time.sleep(self.interval)
+                sleep(self.interval)
         except KeyboardInterrupt:
             if self.mqtt_config:
                 self.mqtt_client.loop_stop()
