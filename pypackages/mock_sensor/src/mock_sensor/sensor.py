@@ -1,9 +1,8 @@
 """A mock sensor for testing."""
 
-import json
 import logging
 import random
-from time import sleep, time
+from time import sleep, time_ns
 from typing import Iterator
 
 import paho.mqtt.client as mqtt
@@ -119,21 +118,19 @@ class MockSensor:
 
         try:
             while True:
-                timestamp = int(time() * 1_000_000_000)  # timestamp in nanoseconds
+                ts, ts_ns = divmod(time_ns(), 1_000_000_000)
+                payload = f"ts {ts} ts_ns {ts_ns} "  # Timestamp in seconds with nanoseconds
 
-                # Generate metric values
-                values = {"timestamp": timestamp} | {
-                    metric.config.name: metric() for metric in self.metrics
-                }
-
-                json_payload = json.dumps(values)
+                # For our mock sensor, we assume 2 decimal places of precision for all metrics
+                values = {metric.config.name: metric() for metric in self.metrics}
+                payload += " ".join(f"{k} {v:.2f}" for k, v in values.items())
 
                 # Regardless of output method(s), log the generated values
-                logging.info("%s", json_payload)
+                logging.info("%s", payload)
 
                 if self.mqtt_client:
                     # Publish to MQTT
-                    self.mqtt_client.publish(self.mqtt_topic, json_payload)
+                    self.mqtt_client.publish(self.mqtt_topic, payload)
 
                 sleep(self.interval)
         except KeyboardInterrupt:

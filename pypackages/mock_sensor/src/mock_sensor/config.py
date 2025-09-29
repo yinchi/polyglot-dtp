@@ -7,6 +7,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class AuthSettings(BaseSettings):
     """Authentication settings for the mock sensor."""
 
+    mqtt_hostname: str = Field(default="localhost")
+    """The hostname of the MQTT broker. Defaults to "localhost".  Use an empty value to disable
+    MQTT."""
+
     mqtt_username: str | None = None
     """An optional username for MQTT authentication."""
 
@@ -15,7 +19,6 @@ class AuthSettings(BaseSettings):
 
     model_config = SettingsConfigDict(
         extra="ignore",
-        env_prefix="SENSOR_AUTH_",
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
@@ -111,8 +114,9 @@ class SensorConfig(BaseModel):
     """The interval (in seconds) between metric generations."""
 
 
-def example_config(name: str, mqtt: bool = False) -> SensorConfig:
+def example_config(name: str, mqtt: str) -> SensorConfig:
     """Return an example configuration for the mock sensor."""
+    mqtt = mqtt.strip()
     return SensorConfig(
         name=name,
         description=f"A mock sensor named {name}",
@@ -136,6 +140,6 @@ def example_config(name: str, mqtt: bool = False) -> SensorConfig:
                 max_value=100.0,
             ),
         ],
-        mqtt_config=MQTTConfig() if mqtt else None,  # Use default MQTT settings
+        mqtt_config=MQTTConfig(hostname=mqtt) if mqtt else None,  # Use default MQTT settings
         interval=30.0,
     )

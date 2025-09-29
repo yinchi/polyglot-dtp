@@ -19,7 +19,9 @@ logging.basicConfig(
 
 auth_settings = AuthSettings(_env_file=find_dotenv("sensor.env", raise_error_if_not_found=True))
 
-config = example_config("test_sensor", mqtt=False)
+# Default MQTT hostname is "localhost". To use a different MQTT hostname,
+# edit MQTT_HOSTNAME in `sensor.env`. An empty value disables MQTT.
+config = example_config("test_sensor", mqtt=auth_settings.mqtt_hostname)
 sensor = MockSensor(config, auth_settings)
 
 sensor.run()
