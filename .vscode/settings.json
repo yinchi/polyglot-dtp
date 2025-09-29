@@ -9,6 +9,7 @@
         "editor.wordWrapColumn": 100
     },
     "files.associations": {
-        "justfile": "just"
+        "justfile": "just",
+        "*.env": "properties"
     }
 }
