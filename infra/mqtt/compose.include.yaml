@@ -1,0 +1,19 @@
+services:
+  # Dumb MQTT broker: blindly forward messages from publishers to subscribers.
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: polyglot-dtp-mosquitto
+    restart: always
+    networks:
+      - iot
+    ports:
+      - "1883:1883"  # MQTT default port
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    healthcheck:
+      # Use $$ to escape $ in docker-compose healthcheck command.
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

@@ -3,6 +3,7 @@ include:
   - ./infra/postgres/compose.include.yaml
   - ./infra/neo4j/compose.include.yaml
   - ./infra/influx/compose.include.yaml
+  - ./infra/mqtt/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
 
 # Additional services are defined in the included compose files.
@@ -34,8 +35,13 @@ services:
       retries: 5
       start_period: 30s
 
-# Default network for all services
 networks:
+  # Default network for all services
   default:
     name: polyglot-dtp-net
+    driver: bridge
+
+  # IoT network for MQTT and other IoT services
+  iot:
+    name: polyglot-dtp-iot-net
     driver: bridge
