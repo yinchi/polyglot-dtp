@@ -41,14 +41,8 @@ echo
 # Install required packages via apt (Canonical packages only)
 echo "🛠️  Installing required packages (apt)..."
 sudo apt-get install -yqo APT::Get::HideAutoRemove=1 \
-    git \
-    curl wget \
-    just \
-    pre-commit \
-    python3 python3-click \
-    kubecolor \
-    jq \
-    pgcli cypher-shell
+    git curl wget just pre-commit python3 python3-click \
+    kubecolor jq pgcli cypher-shell mosquitto-clients
 echo
 
 # Check global Git configuration for user.name and user.email
