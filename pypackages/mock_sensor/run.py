@@ -9,7 +9,7 @@ TODO: add MQTT publishing, fix module to match the specification change in READM
 import logging
 
 from dotenv import find_dotenv
-from mock_sensor.config import example_config
+from mock_sensor.config import MQTTConfig, example_config
 from mock_sensor.sensor import AuthSettings, MockSensor
 
 logging.basicConfig(
@@ -21,7 +21,14 @@ auth_settings = AuthSettings(_env_file=find_dotenv("sensor.env", raise_error_if_
 
 # Default MQTT hostname is "localhost". To use a different MQTT hostname,
 # edit MQTT_HOSTNAME in `sensor.env`. An empty value disables MQTT.
-config = example_config("test_sensor", mqtt=auth_settings.mqtt_hostname)
-sensor = MockSensor(config, auth_settings)
+mqtt_config: MQTTConfig | None = None
+if auth_settings.mqtt_hostname:
+    mqtt_config = MQTTConfig(
+        hostname=auth_settings.mqtt_hostname,
+        port=auth_settings.mqtt_port,
+        mqtt_hmac_key=auth_settings.mqtt_hmac_key,
+    )
+config = example_config("test_sensor", mqtt_config)
 
+sensor = MockSensor(config, auth_settings)
 sensor.run()

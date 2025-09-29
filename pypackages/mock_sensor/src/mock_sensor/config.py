@@ -11,11 +11,19 @@ class AuthSettings(BaseSettings):
     """The hostname of the MQTT broker. Defaults to "localhost".  Use an empty value to disable
     MQTT."""
 
-    mqtt_username: str | None = None
-    """An optional username for MQTT authentication."""
+    mqtt_port: int = Field(default=1883, ge=1, le=65535)
+    """The port of the MQTT broker.  Defaults to 1883 if not specified.  Ignored if
+    mqtt_hostname is empty."""
 
-    mqtt_password: str | None = None
-    """An optional password for MQTT authentication."""
+    mqtt_hmac_key: str = Field(default="mqtt-message-signing-key")
+    """An HMAC key used to sign MQTT messages.  Ignored if mqtt_hostname is empty.  For simplicity,
+    we set a default value even if MQTT is disabled."""
+
+    mqtt_username: str | None = Field(default=None)
+    """An optional username for MQTT authentication.  Ignored if mqtt_hostname is empty."""
+
+    mqtt_password: str | None = Field(default=None)
+    """An optional password for MQTT authentication.  Ignored if mqtt_hostname is empty."""
 
     model_config = SettingsConfigDict(
         extra="ignore",
@@ -78,6 +86,9 @@ class MQTTConfig(BaseModel):
     port: int = Field(default=1883)
     """The port of the MQTT broker. Defaults to 1883."""
 
+    mqtt_hmac_key: str
+    """An HMAC key used to sign MQTT messages."""
+
     topic_prefix: str = Field(default="sensors/mock")
     """The topic prefix to use when publishing metrics.  Each metric appends its name to this
     prefix. Defaults to `sensors/mock`.
@@ -114,9 +125,8 @@ class SensorConfig(BaseModel):
     """The interval (in seconds) between metric generations."""
 
 
-def example_config(name: str, mqtt: str) -> SensorConfig:
+def example_config(name: str, mqtt_config: MQTTConfig | None) -> SensorConfig:
     """Return an example configuration for the mock sensor."""
-    mqtt = mqtt.strip()
     return SensorConfig(
         name=name,
         description=f"A mock sensor named {name}",
@@ -140,6 +150,6 @@ def example_config(name: str, mqtt: str) -> SensorConfig:
                 max_value=100.0,
             ),
         ],
-        mqtt_config=MQTTConfig(hostname=mqtt) if mqtt else None,  # Use default MQTT settings
+        mqtt_config=mqtt_config,
         interval=30.0,
     )

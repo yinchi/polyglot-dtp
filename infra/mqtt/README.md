@@ -16,7 +16,7 @@ An example MQTT message is:
 Tv54zB5V1RqlLto36KaJStWhtGVNlcfMd2ITNCR3Phg= ts 1759114961 ts_ns 671685824 temperature 10.0 humidity 20.0
 ```
 
-- The first token is the signature for the payload (the rest of the message).  We use HMAC with SHA256 to sign our messages.
+- The first token is the signature for the payload (the rest of the message).  We use [HMAC](https://docs.python.org/3/library/hmac.html) with SHA256 to sign our messages.
 - The timestamp is split into second and nanosecond parts so as not to overflow any 32-bit integer representations.  In Python, use:
   ```py
   from time import time_ns
