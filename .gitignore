@@ -1,13 +1,11 @@
-# Environment files
-*.env
-!*.env.example
-
 # Secrets
 *.secret
+*.env
 *.key
 *.pem
 *.crt
 *secret*/
+!*.example*
 
 # Python
 __pycache__/

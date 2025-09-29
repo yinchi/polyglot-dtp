@@ -15,7 +15,7 @@ All instructions for this repo assume a Ubuntu or Debian-based environment with 
 
 2. Run
     ```bash
-    cp .env.example .env
+    cp .example.env .env
     ```
    and edit `.env` as desired.  You can use `just gen-pass` to generate random passwords/keys.
 
