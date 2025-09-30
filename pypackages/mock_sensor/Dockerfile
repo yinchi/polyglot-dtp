@@ -1,4 +1,7 @@
-# An example using multi-stage image builds to create a final image without uv.
+# Dockerfile for a mock sensor service.  Loads the `mock_sensor` (this) package and runs
+# `run.py`.
+#
+# Two-stage build to create a final image without uv.
 # Source: https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile
 
 # First, build the application in the `/app` directory.
@@ -13,15 +16,19 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
+
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=pypackages/twins_test/pyproject.toml,target=pypackages/twins_test/pyproject.toml \
-    uv sync --frozen --package polyglot-dtp-twins-test --no-install-project --no-dev
-COPY ./pyproject.toml ./README.md ./LICENSE ./COPYRIGHT ./uv.lock /app/
-COPY ./pypackages/twins_test/ /app/pypackages/twins_test/
+    --mount=type=bind,source=pypackages/mock_sensor/pyproject.toml,target=/app/pypackages/mock_sensor/pyproject.toml \
+    uv sync --frozen --package mock_sensor --no-install-project --no-dev
+COPY ./pyproject.toml ./README.md ./uv.lock /app/
+
+# Install the actual application
+COPY ./pypackages/mock_sensor/ /app/pypackages/mock_sensor/
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev --package polyglot-dtp-twins-test
+    uv sync --frozen --package mock_sensor --no-dev
 
 # Then, use a final image without uv
 FROM python:3.13-slim-bookworm
@@ -34,19 +41,17 @@ RUN apt-get update && apt-get install -y \
 
 # Setup a non-root user
 RUN groupadd --system --gid 999 fastapi \
- && useradd --system --gid 999 --uid 999 --create-home fastapi
+ && useradd --system --gid 999 --uid 999 --create-home mocksensor
 
 # Copy the application from the builder
-COPY --from=builder --chown=fastapi:fastapi /app /app
+COPY --from=builder --chown=mocksensor:mocksensor /app /app
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-USER fastapi
-WORKDIR /app/pypackages/twins_test
+USER mocksensor
+WORKDIR /app/pypackages/mock_sensor/
 
-# Run the FastAPI application by default
-ENTRYPOINT [ "fastapi", "run" ]
-CMD [ "--host", "0.0.0.0", "--port", "8000", "-e", "polyglot_dtp.twins.test:app", "src/" ]
-
-EXPOSE 8000
+# Run the sensor application by default
+ENTRYPOINT [ "python", "run.py" ]
+CMD [ "--config", "/app/sensor.yaml" ]

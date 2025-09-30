@@ -1,8 +1,8 @@
 include:
   # Use `find -name compose.include.yaml` to locate and include other compose files.
-  - ./infra/postgres/compose.include.yaml
-  - ./infra/neo4j/compose.include.yaml
-  - ./infra/influx/compose.include.yaml
+  - ./data-store/postgres/compose.include.yaml
+  - ./data-store/neo4j/compose.include.yaml
+  - ./data-store/influx/compose.include.yaml
   - ./infra/mqtt/compose.include.yaml
   - ./pypackages/twins_test/compose.include.yaml
 
@@ -35,13 +35,29 @@ services:
       retries: 5
       start_period: 30s
 
+
+# Network architecture:
+#
+#                  Filtering/validation/
+#  IOT devices      forwarding service    Internal services
+#        \            /      \              /
+#         \          /        \            /
+#          IOT network        Bridge network
 networks:
   # Default network for all services
   default:
     name: polyglot-dtp-net
     driver: bridge
 
-  # IoT network for MQTT and other IoT services
+  # Network for IoT devices.
   iot:
-    name: polyglot-dtp-iot-net
+    name: polyglot-dtp-net-iot
+    driver: bridge
+    attachable: true
+
+  # Network for bridging between IoT network and internal services.
+  # There should be a service to filter MQTT messages by topic,
+  # validate payloads (e.g. HMAC), and forward to internal services.
+  iot-bridge:
+    name: polyglot-dtp-net-iot-bridge
     driver: bridge

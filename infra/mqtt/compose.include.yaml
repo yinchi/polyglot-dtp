@@ -6,6 +6,7 @@ services:
     restart: always
     networks:
       - iot
+      - iot-bridge
     ports:
       - "1883:1883"  # MQTT default port
     volumes:

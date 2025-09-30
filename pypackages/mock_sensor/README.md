@@ -7,7 +7,7 @@ Use `example_config()` for default settings: a sensor with temperature and humid
 Messages are formatted according to the specification in `infra/mqtt/README.md`.
 
 > [!NOTE]
-> Use `screen` in `bash` to run the script in a new, detached `screen` session in the background. You can later reattach to this session with `screen -r`.
+> For non-containerized usage, use `screen` in `bash` to run the script in a new, detached `screen` session in the background. You can later reattach to this session with `screen -r`.
 >
 > ```bash
 > screen -d -m -s uv run python pypackages/mock_sensor/run.py

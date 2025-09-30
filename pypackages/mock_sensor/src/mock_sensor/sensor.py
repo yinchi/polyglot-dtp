@@ -4,6 +4,8 @@ import hmac
 import logging
 import random
 import re
+import signal
+import sys
 from binascii import b2a_base64
 from time import sleep, time_ns
 from typing import Iterator
@@ -11,6 +13,9 @@ from typing import Iterator
 import paho.mqtt.client as mqtt
 
 from .config import AuthSettings, MetricConfig, SensorConfig
+
+# Ensure we exit cleanly on SIGTERM (e.g. from `docker stop`)
+signal.signal(signal.SIGTERM, lambda _signum, _frame: sys.exit(0))
 
 
 def random_walk(x0: float, max_step: float, min_x: float, max_x: float) -> Iterator[float]:
@@ -118,7 +123,12 @@ class MockSensor:
     def run(self):
         """Run the mock sensor, publishing metrics to MQTT and/or InfluxDB."""
         if self.mqtt_client:
-            self.mqtt_client.connect(self.auth_settings.mqtt_hostname, self.auth_settings.mqtt_port)
+            ret_code = self.mqtt_client.connect(
+                self.auth_settings.mqtt_hostname, self.auth_settings.mqtt_port
+            )
+            if ret_code != 0:
+                logging.warning(f"Failed to connect to MQTT broker: {ret_code}")
+                logging.warning("MQTT messages may be lost.")
             self.mqtt_client.loop_start()
 
         try:
@@ -145,6 +155,12 @@ class MockSensor:
 
                 sleep(self.interval)
         except KeyboardInterrupt:
+            pass
+        finally:
             if self.mqtt_client:
+                logging.info("")
+                logging.info("")
+                logging.info("Disconnecting from MQTT broker...")
                 self.mqtt_client.loop_stop()
                 self.mqtt_client.disconnect()
+                logging.info("Disconnected.")

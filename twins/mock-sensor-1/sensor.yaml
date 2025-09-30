@@ -1,0 +1,19 @@
+name: test_sensor
+description: A mock sensor named test_sensor
+mqtt_topic: sensors/mock/test_sensor
+metrics:
+- name: temperature
+  description: The temperature in degrees Celsius
+  unit: °C
+  initial_value: 20.0
+  max_step: 0.5
+  min_value: -10.0
+  max_value: 40.0
+- name: humidity
+  description: The relative humidity in percent
+  unit: '%'
+  initial_value: 50.0
+  max_step: 1.0
+  min_value: 0.0
+  max_value: 100.0
+interval: 30.0
