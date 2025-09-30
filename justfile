@@ -15,15 +15,15 @@ default:
 ## DT platform config files
 #################################
 
-# Display all infra.yaml files in the project directory
-infra:
+# Display all dt.component.yaml files in the project directory
+cmp:
     #!/usr/bin/env bash
-    yq eval-all '[.] | sort_by(.name)' $(find infra/ -name infra.yaml)
+    yq eval-all '[.] | sort_by(.name)' $(find . -name dt.component.yaml)
 
-# List all infra.yaml files in the project directory
-infra-find:
+# List all dt.component.yaml files in the project directory
+cmp-find:
     #!/usr/bin/env bash
-    find infra/ -name infra.yaml
+    find . -name dt.component.yaml
 
 #################################
 ## Kubernetes
