@@ -10,8 +10,6 @@ ping: {}
 entryPoints:
   web:
     address: ":80"
-  mqtt:
-    address: ":1883"
 
 # Docker service detection
 providers:
