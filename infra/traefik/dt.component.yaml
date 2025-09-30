@@ -1,5 +1,6 @@
 name: traefik
 description: Traefik reverse proxy and load balancer
+category: infra
 services:
   - name: traefik
     image: traefik:3.5

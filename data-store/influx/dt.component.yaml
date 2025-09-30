@@ -1,5 +1,6 @@
 name: influx
 description: InfluxDB time series database
+category: data-store
 services:
   - name: influx
     image: influxdb:3-core

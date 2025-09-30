@@ -1,5 +1,6 @@
 name: neo4j
 description: Neo4j graph database
+category: data-store
 services:
   - name: neo4j
     image: neo4j:5-community

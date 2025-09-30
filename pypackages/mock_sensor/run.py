@@ -5,9 +5,10 @@ Data is written to stdout. Optionally, we also publish to MQTT broker (configure
 """
 
 import logging
+import pathlib
 
+import click
 import yaml
-from dotenv import find_dotenv
 from mock_sensor.config import SensorConfig
 from mock_sensor.sensor import AuthSettings, MockSensor
 
@@ -16,12 +17,48 @@ logging.basicConfig(
     format="%(message)s",
 )
 
-auth_settings = AuthSettings(_env_file=find_dotenv("sensor.env", raise_error_if_not_found=True))
+CONTEXT_SETTINGS = {"help_option_names": ["--help", "-h"]}
 
-# Load the sensor configuration from a YAML file
-with open("example.sensor.yaml", "r") as f:
-    obj = yaml.safe_load(f)
-    config = SensorConfig.model_validate(obj)
 
-sensor = MockSensor(config, auth_settings)
-sensor.run()
+@click.command(context_settings=CONTEXT_SETTINGS)
+@click.option(
+    "--config-path",
+    "-c",
+    type=click.Path(exists=True, dir_okay=False, readable=True, path_type=pathlib.Path),
+    required=True,
+    help="Path to the sensor config file (YAML format).",
+)
+@click.option(
+    "--env-path",
+    "-e",
+    type=click.Path(exists=True, dir_okay=False, readable=True, path_type=pathlib.Path),
+    required=False,
+    help="Path to the MQTT config file (dotenv format).",
+)
+def run(config_path: pathlib.Path, env_path: pathlib.Path) -> None:
+    """Run the mock sensor."""
+    # Print the paths we are using
+    logging.info(f"Using config file: {config_path.resolve()}")
+    if env_path:
+        logging.info(f"Using env file: {env_path.resolve()}")
+    else:
+        logging.info("No env file specified, using defaults and environment variables only.")
+    logging.info("")
+
+    # Load authentication settings from environment file
+    if not env_path:
+        auth_settings = AuthSettings()
+    else:
+        auth_settings = AuthSettings(_env_file=env_path.resolve())
+
+    # Load the sensor configuration from a YAML file
+    with open(config_path.resolve(), "r") as f:
+        obj = yaml.safe_load(f)
+        sensor_config = SensorConfig.model_validate(obj)
+
+    sensor = MockSensor(sensor_config, auth_settings)
+    sensor.run()
+
+
+if __name__ == "__main__":
+    run()

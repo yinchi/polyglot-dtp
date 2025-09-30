@@ -1,6 +1,6 @@
 """Configuration classes for the mock sensor."""
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,7 +15,7 @@ class AuthSettings(BaseSettings):
     """The port of the MQTT broker.  Defaults to 1883 if not specified.  Ignored if
     mqtt_hostname is empty."""
 
-    mqtt_hmac_key: str = Field(default="mqtt-message-signing-key")
+    mqtt_hmac_key: SecretStr = Field(default="mqtt-message-signing-key")
     """An HMAC key used to sign MQTT messages.  Ignored if mqtt_hostname is empty.  For simplicity,
     we set a default value even if MQTT is disabled."""
 
@@ -43,7 +43,8 @@ class MetricConfig(BaseModel):
 
     unit: str
     """The unit of the metric.  Note used for data generation/transmission/storage,
-    but useful for documentation purposes.
+    but useful for documentation purposes.  Use an empty string for unitless or non-numeric
+    metrics.
     """
 
     initial_value: float

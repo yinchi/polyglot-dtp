@@ -648,6 +648,7 @@ name = "mock-sensor"
 version = "0.1.0"
 source = { editable = "pypackages/mock_sensor" }
 dependencies = [
+    { name = "click" },
     { name = "paho-mqtt" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -656,6 +657,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "click", specifier = ">=8.3.0" },
     { name = "paho-mqtt", specifier = ">=2.1.0" },
     { name = "pydantic", specifier = ">=2.11.9" },
     { name = "pydantic-settings", specifier = ">=2.11.0" },

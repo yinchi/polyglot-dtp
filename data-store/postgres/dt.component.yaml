@@ -1,5 +1,6 @@
 name: postgres
 description: PostgreSQL database with TimescaleDB extension
+category: data-store
 services:
   - name: postgres
     image: timescale/timescaledb:latest-pg17

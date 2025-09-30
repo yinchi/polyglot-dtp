@@ -1,0 +1,7 @@
+name: mock-sensor-1
+description: A mock temperature and humidity sensor
+category: data-source
+services:
+  - name: mock-sensor-1
+    image: yinchi/mock-sensor:latest
+    urls: []

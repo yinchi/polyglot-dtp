@@ -1,0 +1,9 @@
+name: mqtt
+description: MQTT broker using Eclipse Mosquitto
+category: infra
+services:
+  - name: mosquitto
+    image: eclipse-mosquitto:2.0
+    urls:
+      - address: mqtt://localhost:1883
+        description: MQTT broker

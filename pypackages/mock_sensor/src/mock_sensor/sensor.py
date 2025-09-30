@@ -91,11 +91,11 @@ class MockSensor:
         """The authentication settings for MQTT."""
 
         if auth_settings.mqtt_hostname:
-            assert auth_settings.mqtt_hmac_key, "HMAC key cannot be empty"
+            assert auth_settings.mqtt_hmac_key.get_secret_value(), "HMAC key cannot be empty"
             assert self.mqtt_topic, "MQTT topic cannot be empty"
             assert re.fullmatch(r"\w+(?:/\w+)*", self.mqtt_topic), "Invalid MQTT topic"
 
-            self.hmac_key = auth_settings.mqtt_hmac_key.encode("utf-8")
+            self.hmac_key = auth_settings.mqtt_hmac_key.get_secret_value().encode("utf-8")
 
             logging.info(
                 "Publishing to MQTT broker %s:%d, topic %s",
