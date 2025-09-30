@@ -1,4 +1,4 @@
-"""Test reading data from infra.yaml, with injected password from .env."""
+"""Test reading data from a dt.component.yaml file, with injected password from .env."""
 
 from typing import Callable, TypeVar
 
@@ -15,13 +15,13 @@ def find(fn: Callable[[T], bool], lst: list[T]):
     return next(filter(fn, lst), None)
 
 
-def test_read_infra_yaml():
-    """Test reading data from infra.yaml, with injected password from .env."""
+def test_read_postgres_yaml():
+    """Test reading data from a dt.component.yaml file, with injected password from .env."""
     repo = git.Repo(".", search_parent_directories=True)
     assert not repo.bare and repo.working_tree_dir, "Repository is bare"
     repo_dir = repo.working_tree_dir
 
-    with open(f"{repo_dir}/infra/postgres/infra.yaml", "rb") as f:
+    with open(f"{repo_dir}/data-store/postgres/dt.component.yaml", "rb") as f:
         config = yaml.safe_load(f)
 
     password = dotenv_values().get("POSTGRES_PASSWORD", None)
