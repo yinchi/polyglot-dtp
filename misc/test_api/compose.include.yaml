@@ -1,0 +1,36 @@
+ # Exposes the test-api FastAPI service at http://dtp.localhost/twins/test (via Traefik).
+
+services:
+  test-api:
+    image: yinchi/polyglot-dtp-test-api:latest
+    pull_policy: build
+    build:
+      context: ../../
+      dockerfile: pypackages/test_api/Dockerfile
+    command:
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "-e"
+      - "polyglot_dtp.test_api:app"
+      - "--root-path"
+      - "/test-api"
+      - "src/"
+    container_name: polyglot-dtp-test-api
+    environment:
+      - TEST_API_FOO=${TEST_API_FOO:-default_foo}
+    networks:
+      - default
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.test-api.rule=Host(`yc.ngrok.dev`) && PathPrefix(`/test-api`)"
+      - traefik.http.routers.test-api.entrypoints=web
+      - traefik.http.routers.test-api.middlewares=auth@file,test-api-stripprefix
+      - traefik.http.middlewares.test-api-stripprefix.stripprefix.prefixes=/test-api
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

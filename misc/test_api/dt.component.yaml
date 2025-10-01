@@ -1,0 +1,9 @@
+name: test-api
+description: Test FastAPI service for Polyglot DTP
+category: misc
+services:
+  - name: test-api
+    image: yinchi/polyglot-dtp-test-api:latest
+    urls:
+      - address: https://yc.ngrok.dev/test-api/
+        description: Test API service

@@ -4,7 +4,7 @@ include:
   - ./data-store/neo4j/compose.include.yaml
   - ./data-store/influx/compose.include.yaml
   - ./infra/mqtt/compose.include.yaml
-  - ./pypackages/twins_test/compose.include.yaml
+  - ./misc/test_api/compose.include.yaml
 
 # Additional services are defined in the included compose files.
 # To list all defined servcies, networks, or volumes, run:

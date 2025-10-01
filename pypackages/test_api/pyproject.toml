@@ -1,5 +1,5 @@
 [project]
-name = "polyglot-dtp-twins-test"
+name = "polyglot-dtp-test-api"
 version = "0.1.0"
 description = "Test/template digital twin module for the Polyglot-DTP project"
 readme = "README.md"
@@ -16,10 +16,10 @@ dependencies = [
 ]
 
 [tool.uv.build-backend]
-module-name = "polyglot_dtp.twins.test"
+module-name = "polyglot_dtp.test_api"
 
 [project.scripts]
-twins-test = "polyglot_dtp.twins.test:main"
+twins-test = "polyglot_dtp.test_api:main"
 
 [build-system]
 requires = ["uv_build>=0.8.9,<0.9.0"]

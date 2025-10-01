@@ -16,12 +16,12 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=pypackages/twins_test/pyproject.toml,target=pypackages/twins_test/pyproject.toml \
-    uv sync --frozen --package polyglot-dtp-twins-test --no-install-project --no-dev
+    --mount=type=bind,source=pypackages/test_api/pyproject.toml,target=pypackages/test_api/pyproject.toml \
+    uv sync --frozen --package polyglot-dtp-test-api --no-install-project --no-dev
 COPY ./pyproject.toml ./README.md ./LICENSE ./COPYRIGHT ./uv.lock /app/
-COPY ./pypackages/twins_test/ /app/pypackages/twins_test/
+COPY ./pypackages/test_api/ /app/pypackages/test_api/
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev --package polyglot-dtp-twins-test
+    uv sync --frozen --no-dev --package polyglot-dtp-test-api
 
 # Then, use a final image without uv
 FROM python:3.13-slim-bookworm
@@ -43,10 +43,10 @@ COPY --from=builder --chown=fastapi:fastapi /app /app
 ENV PATH="/app/.venv/bin:$PATH"
 
 USER fastapi
-WORKDIR /app/pypackages/twins_test
+WORKDIR /app/pypackages/test_api
 
 # Run the FastAPI application by default
 ENTRYPOINT [ "fastapi", "run" ]
-CMD [ "--host", "0.0.0.0", "--port", "8000", "-e", "polyglot_dtp.twins.test:app", "src/" ]
+CMD [ "--host", "0.0.0.0", "--port", "8000", "-e", "polyglot_dtp.test_api:app", "src/" ]
 
 EXPOSE 8000

@@ -6,7 +6,7 @@ requires-python = "==3.13.*"
 members = [
     "mock-sensor",
     "polyglot-dtp",
-    "polyglot-dtp-twins-test",
+    "polyglot-dtp-test-api",
     "pytests",
 ]
 
@@ -872,9 +872,9 @@ dev = [
 ]
 
 [[package]]
-name = "polyglot-dtp-twins-test"
+name = "polyglot-dtp-test-api"
 version = "0.1.0"
-source = { editable = "pypackages/twins_test" }
+source = { editable = "pypackages/test_api" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic" },

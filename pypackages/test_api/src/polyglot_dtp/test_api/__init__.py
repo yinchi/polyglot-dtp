@@ -41,7 +41,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         extra="ignore",
-        env_prefix="TWIN_TEST_",
+        env_prefix="TEST_API_",
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
@@ -177,8 +177,8 @@ async def get_foo():
     """Get the value of `foo`, which is loaded from environment variables or the .env file.
 
     The order of precedence for loading the value is:
-    1. `TWIN_TEST_FOO` environment variable
-    2. `TWIN_TEST_FOO` variable in the .env file
+    1. `TEST_API_FOO` environment variable
+    2. `TEST_API_FOO` variable in the .env file
     3. Default value defined in the code (`default_value`)
     """
     return PlainTextResponse(settings.foo)
@@ -188,8 +188,8 @@ async def read_root():
     """Get the value of `foo`, which is loaded from environment variables or the .env file.
 
     The order of precedence for loading the value is:
-    1. `TWIN_TEST_FOO` environment variable
-    2. `TWIN_TEST_FOO` variable in the .env file
+    1. `TEST_API_FOO` environment variable
+    2. `TEST_API_FOO` variable in the .env file
     3. Default value defined in the code (`default_value`)
     """
     return PlainTextResponse(settings.foo)
