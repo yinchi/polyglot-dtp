@@ -26,11 +26,11 @@ services:
       retries: 5
       start_period: 30s
   phppgadmin:
-    image: yinchi/polyglot-dtp-phppgadmin:latest
-    pull_policy: build
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: yinchi/polyglot-dtp-phppgadmin:20251001  # Change to `latest` when making changes
+    pull_policy: missing  # Manually rebuild, tag, and push to Docker Hub when needed
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: polyglot-dtp-phppgadmin
     volumes:
       - ./phppgadmin/phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
