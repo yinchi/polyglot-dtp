@@ -114,10 +114,29 @@ else
 fi
 
 # Check for lazydocker (a terminal UI for Docker)
-echo "🛠️  Installing or upgrading lazydocker..."
+echo "🛠️  Checking for lazydocker..."
+if ! lazydocker --version &> /dev/null; then
+    echo "lazydocker not found. Installing lazydocker..."
 curl -fsSL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-echo "✅  lazydocker installed."
+    echo "✅  lazydocker installed."
+else
+    echo "✅  lazydocker is already installed."
+fi
 lazydocker --version
+echo
+
+
+# Check for ctop (a terminal UI for container metrics)
+echo "🛠️  Checking for ctop..."
+if ! ctop -v &> /dev/null; then
+    echo "ctop not found. Installing ctop..."
+    sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -O /usr/local/bin/ctop
+    sudo chmod +x /usr/local/bin/ctop
+    echo "✅  ctop installed."
+else
+    echo "✅  ctop is already installed."
+fi
+ctop -v
 echo
 
 # Check if minikube is installed, if not, install it
@@ -136,11 +155,16 @@ minikube version
 echo
 
 # Check for k9s (a terminal UI for Kubernetes)
-echo "🛠️  Installing or upgrading k9s..."
-curl -fsSLO https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
-sudo dpkg -i k9s_linux_amd64.deb
-rm k9s_linux_amd64.deb
-echo "✅  k9s installed."
+echo "🛠️  Checking for k9s..."
+if ! k9s version &> /dev/null; then
+    echo "k9s not found. Installing k9s..."
+    curl -fsSLO https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
+    sudo dpkg -i k9s_linux_amd64.deb
+    rm k9s_linux_amd64.deb
+    echo "✅  k9s installed."
+else
+    echo "✅  k9s is already installed."
+fi
 k9s version --short
 echo
 
