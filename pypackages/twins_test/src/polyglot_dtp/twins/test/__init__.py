@@ -3,9 +3,11 @@
 import logging
 import sys
 import tomllib
+from base64 import b64decode
+from typing import Awaitable, Callable
 
 import dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import PlainTextResponse
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -94,13 +96,94 @@ on how to use this module as a template for your own digital twin module, please
 )
 
 
+@app.middleware("http")
+async def authorize_user(
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
+) -> Response:
+    """Authorize user using HTTP BasicAuth.
+
+    Note if the BasicAuth configuration in Traefik is changed, this middleware will
+    also need to be updated accordingly.  For example, we will want to upgrade to ForwardAuth
+    in the future.
+    """
+    logger.debug("[middleware] requested URL: %s", request.url)
+    if request.url.path.endswith("/health"):
+        return await call_next(request)  # Skip auth for health check
+
+    auth_header = request.headers.get("Authorization")
+    logger.debug("[middleware] auth header: %s", auth_header)
+    if auth_header:
+        # Header format: Basic <base64("user:password")>
+        try:
+            tokens = auth_header.split(" ")
+            assert len(tokens) == 2, "Invalid Authorization header format"
+            assert tokens[0] == "Basic", "Unsupported Authorization scheme, expected 'Basic'."
+            if tokens[1]:
+                credentials = b64decode(tokens[1]).decode("utf-8")
+                cred_tokens = credentials.split(":")
+                assert len(cred_tokens) == 2, "Invalid Basic Auth credentials format."
+                username, password = cred_tokens
+            else:
+                return PlainTextResponse(
+                    "Unauthorized: Missing credentials.", status_code=status.HTTP_401_UNAUTHORIZED
+                )
+            assert username and password, "Username and password cannot be empty."
+        except AssertionError as e:
+            logger.warning("Authorization failed for user %s: %s", username, e)
+            return PlainTextResponse(f"Unauthorized: {e}", status_code=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            logger.warning("Authorization failed for user %s: %s", username, e)
+            # As we did not set the error string ourselves, don't show it to the client
+            return PlainTextResponse("Bad Request", status_code=status.HTTP_400_BAD_REQUEST)
+    else:
+        return PlainTextResponse(
+            "Unauthorized: Missing Authorization header.", status_code=status.HTTP_401_UNAUTHORIZED
+        )
+
+    # For demonstration purposes, we don't actually verify the username and password, but
+    # simply check they are not empty.
+    logger.debug("[middleware] User: %s, URL: %s", username, request.url)
+
+    # TODO: Implement proper user authentication and authorization here.
+    # if not check_auth(username or "nobody", password or "nobody", request.url.path):
+    #     raise HTTPException(status_code=403, detail="Forbidden")
+
+    request.state.username = username
+    logger.debug("[middleware] Authenticated.")
+    return await call_next(request)
+
+
 @app.get(
     "/",
     response_class=PlainTextResponse,
     response_model=str,
-    summary="Get the value of `foo`",
-    responses={200: {"content": {"text/plain": {"example": "hello world"}}}},
+    summary="Greet the user",
+    responses={200: {"content": {"text/plain": {"example": "Hello, user1!"}}}},
 )
+async def greet_user(request: Request):
+    """Greet the user."""
+    username = request.state.username or "nobody"
+    return PlainTextResponse(f"Hello, {username}!")
+
+
+@app.get(
+    "/foo",
+    response_class=PlainTextResponse,
+    response_model=str,
+    summary="Get the value of `foo`",
+    responses={200: {"content": {"text/plain": {"example": "Hello, World!"}}}},
+)
+async def get_foo():
+    """Get the value of `foo`, which is loaded from environment variables or the .env file.
+
+    The order of precedence for loading the value is:
+    1. `TWIN_TEST_FOO` environment variable
+    2. `TWIN_TEST_FOO` variable in the .env file
+    3. Default value defined in the code (`default_value`)
+    """
+    return PlainTextResponse(settings.foo)
+
+
 async def read_root():
     """Get the value of `foo`, which is loaded from environment variables or the .env file.
 

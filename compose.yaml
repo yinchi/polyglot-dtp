@@ -23,6 +23,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./infra/traefik/htpasswd:/etc/traefik/htpasswd:ro
+      - ./infra/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
     networks:
       - default
     ports:
@@ -34,7 +36,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-
 
 # Network architecture:
 #

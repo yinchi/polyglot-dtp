@@ -5,6 +5,7 @@
 *.pem
 *.crt
 *secret*/
+*htpasswd*
 !*.example*
 
 # Python

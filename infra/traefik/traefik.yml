@@ -16,3 +16,6 @@ providers:
   docker:
     # Set a `traefik.enable=true` label to expose a Docker service
     exposedByDefault: false
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true

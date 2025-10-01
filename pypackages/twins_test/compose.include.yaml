@@ -24,9 +24,9 @@ services:
       - default
     labels:
       - traefik.enable=true
-      - "traefik.http.routers.twins-test.rule=Host(`dtp.localhost`) && PathPrefix(`/twins/test`)"
+      - "traefik.http.routers.twins-test.rule=Host(`yc.ngrok.dev`) && PathPrefix(`/twins/test`)"
       - traefik.http.routers.twins-test.entrypoints=web
-      - traefik.http.routers.twins-test.middlewares=twins-test-stripprefix
+      - traefik.http.routers.twins-test.middlewares=auth@file,twins-test-stripprefix
       - traefik.http.middlewares.twins-test-stripprefix.stripprefix.prefixes=/twins/test
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8000/health"]
