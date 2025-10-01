@@ -3,6 +3,7 @@
 This template module contains a `uv` project representing a dummy digital twin module.
 
 **To launch locally:**
+
 ```bash
 cd $(git root)
 chmod +x pypackages/twins_test/launch.sh
@@ -12,10 +13,12 @@ chmod +x pypackages/twins_test/launch.sh
 This exposes the FastAPI app at <http://localhost:8000>.  Auto-generated documentation is available at <http://localhost:8000/docs>.
 
 **To launch in Docker:**
+
 ```bash
 cd $(git root)
 docker compose up twins-test -d
 ```
+
 Use the `-f` and `--env-file` flags to configure Docker Compose if necessary (see `docker compose --help`).
 
 Alternatively, use `just docker-up` to launch the entire Docker Compose stack, starting missing services as needed.
@@ -31,6 +34,7 @@ mv pypackages/twins_testcopy/src/polyglot_dtp/twins/test \
 ```
 
 **EDIT YOUR FILES** as follows:
+
 - `README.md`: edit this README to describe the new digital twin.
 - `pyproject.toml`: Python project metadata used by `uv`.  Needs editing.
 - `Dockerfile`: edit this to point Docker to the new Python package and FastAPI entrypoint.
@@ -38,6 +42,7 @@ mv pypackages/twins_testcopy/src/polyglot_dtp/twins/test \
 - `launch.sh`: launches the FastAPI server locally without using Docker or Kubernetes.
 
 Next, update the `uv` workspace:
+
 ```bash
 just uv-sync
 ```

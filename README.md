@@ -7,22 +7,28 @@ All instructions for this repo assume a Ubuntu or Debian-based environment with 
 0. If you are using Windows, obtain an Ubuntu environment using [WSL](https://code.visualstudio.com/docs/remote/wsl).  Open a WSL terminal and proceed as if you are using Ubuntu natively.
 
 1. Run
+
     ```bash
     chmod +x setup.sh
     ./setup.sh
     ```
+
    This will check your development environment and install missing software packages as needed.
 
 2. Run
+
     ```bash
     cp .example.env .env
     ```
+
    and edit `.env` as desired.  You can use `just gen-pass` to generate random passwords/keys.
 
 3. Run
+
     ```bash
     just docker-up
     ```
+
    To launch the Docker Compose stack.
 
 >[!NOTE]

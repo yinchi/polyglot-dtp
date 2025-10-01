@@ -31,6 +31,12 @@ repos:
     - id: biome-check
       files: ^nodejs/
 
+# Lint Markdown files.
+- repo: https://github.com/DavidAnson/markdownlint-cli2
+  rev: v0.18.1
+  hooks:
+  - id: markdownlint-cli2
+
 # Run all tests in the pytests/ directory using just.
 - repo: local
   hooks:

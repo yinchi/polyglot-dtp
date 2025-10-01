@@ -9,6 +9,7 @@ Use `just influx-token` to create the admin password file.  This uses a temporar
 We can access the InfluxDB command-line interface using `just influx`.  This executes the CLI using `docker compose exec`.
 
 To initialize the database:
+
 ```bash
 just influx create database dtp
 just influx show databases
