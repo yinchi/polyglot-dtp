@@ -5,6 +5,8 @@ metrics:
 - name: temperature
   description: The temperature in degrees Celsius
   unit: °C
+  datatype: float
+  precision: 1
   initial_value: 20.0
   max_step: 0.5
   min_value: -10.0
@@ -12,6 +14,8 @@ metrics:
 - name: humidity
   description: The relative humidity in percent
   unit: '%'
+  datatype: float
+  precision: 1
   initial_value: 50.0
   max_step: 1.0
   min_value: 0.0

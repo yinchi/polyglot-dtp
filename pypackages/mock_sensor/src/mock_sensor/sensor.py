@@ -1,6 +1,7 @@
 """A mock sensor for testing."""
 
 import hmac
+import json
 import logging
 import random
 import re
@@ -13,6 +14,15 @@ from typing import Iterator
 import paho.mqtt.client as mqtt
 
 from .config import AuthSettings, MetricConfig, SensorConfig
+
+# Canonical JSON encoding settings: no whitespace, sorted keys
+# Used to ensure 1-to-1 mapping between objects and their JSON string representation
+# (for HMAC signing and verification)
+CANONICAL_JSON = {
+    "indent": None,
+    "separators": (",", ":"),
+    "sort_keys": True,
+}
 
 # Ensure we exit cleanly on SIGTERM (e.g. from `docker stop`)
 signal.signal(signal.SIGTERM, lambda _signum, _frame: sys.exit(0))
@@ -134,17 +144,23 @@ class MockSensor:
         try:
             while True:
                 ts, ts_ns = divmod(time_ns(), 1_000_000_000)
-                payload = f"ts {ts} ts_ns {ts_ns} "  # Timestamp in seconds with nanoseconds
 
-                # For our mock sensor, we assume 2 decimal places of precision for all metrics
-                values = {metric.config.name: metric() for metric in self.metrics}
-                payload += " ".join(f"{k} {v:.2f}" for k, v in values.items())
+                payload = {"ts": ts, "ts_ns": ts_ns} | {
+                    metric.config.name: round(metric(), metric.config.precision)
+                    for metric in self.metrics
+                }
+                # JSON-encode using compact canonical form (no whitespace, sorted keys)
+                # to ensure 1-to-1 mapping between payload and payload_str
+                payload_str = json.dumps(payload, **CANONICAL_JSON)
 
                 digest = b2a_base64(
-                    hmac.digest(self.hmac_key, payload.encode("utf-8"), "sha256"),
+                    hmac.digest(self.hmac_key, payload_str.encode("utf-8"), "sha256"),
                     newline=False,
                 ).decode("utf-8")
-                msg = f"{digest} {payload}"
+
+                # Since we used a canonical JSON representation for the payload (1-to-1 mapping),
+                # we can just embed the payload instead of payload_str
+                msg = json.dumps({"payload": payload, "hmac": digest}, **CANONICAL_JSON)
 
                 # Regardless of output method(s), log the generated values
                 logging.info("%s", msg)
