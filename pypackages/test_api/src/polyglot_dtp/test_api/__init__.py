@@ -184,17 +184,6 @@ async def get_foo():
     return PlainTextResponse(settings.foo)
 
 
-async def read_root():
-    """Get the value of `foo`, which is loaded from environment variables or the .env file.
-
-    The order of precedence for loading the value is:
-    1. `TEST_API_FOO` environment variable
-    2. `TEST_API_FOO` variable in the .env file
-    3. Default value defined in the code (`default_value`)
-    """
-    return PlainTextResponse(settings.foo)
-
-
 @app.get(
     "/health",
     response_class=PlainTextResponse,
