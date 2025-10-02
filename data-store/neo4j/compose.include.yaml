@@ -10,8 +10,10 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-dtpsecret1}
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - "127.0.0.1:7474:7474"
+      - "[::1]:7474:7474"
+      - "127.0.0.1:7687:7687"
+      - "[::1]:7687:7687"
     networks:
       - default
     volumes:
