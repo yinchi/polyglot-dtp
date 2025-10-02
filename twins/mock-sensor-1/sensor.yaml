@@ -1,6 +1,6 @@
-name: test_sensor
-description: A mock sensor named test_sensor
-mqtt_topic: sensors/mock/test_sensor
+name: mock-sensor-1
+description: A mock sensor named mock-sensor-1
+mqtt_topic: sensors/mock/mock-sensor-1
 metrics:
 - name: temperature
   description: The temperature in degrees Celsius

@@ -56,6 +56,11 @@ def run(config: pathlib.Path, env: pathlib.Path) -> None:
         obj = yaml.safe_load(f)
         sensor_config = SensorConfig.model_validate(obj)
 
+    for line in yaml.dump(sensor_config.model_dump(), sort_keys=False).splitlines():
+        logging.info(f"{line}")
+    logging.info("")
+    logging.info("")
+
     sensor = MockSensor(sensor_config, auth_settings)
     sensor.run()
 
