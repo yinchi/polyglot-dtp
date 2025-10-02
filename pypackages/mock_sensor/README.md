@@ -2,15 +2,22 @@
 
 This module fakes data using a random walk with upper and lower bounds.
 
-Use `example_config()` for default settings: a sensor with temperature and humidity readings and an optional MQTT connection. You can use the `run.py` script to set up a sensor with these settings, publishing to `MQTT_HOSTNAME` in `sensor.env`.
+1. Using the provided `example.sensor.yaml` in the link above, create your sensor configuration.
+2. Create `mqtt.env` to hold your MQTT configuration.  An example is as follows:
 
-Messages are formatted according to the specification in `infra/mqtt/README.md`.
+    ```properties
+    # leave blank to disable MQTT
+    MQTT_HOSTNAME=mosquitto
+    MQTT_PORT=1883
+    MQTT_HMAC_KEY=example-mqtt-signing-key
+    ```
 
-> [!NOTE]
-> For non-containerized usage, use `screen` in `bash` to run the script in a new, detached `screen` session in the background. You can later reattach to this session with `screen -r`.
->
-> ```bash
-> screen -d -m -s uv run python pypackages/mock_sensor/run.py
-> ```
+   MQTT messages are signed with [HMAC](https://docs.python.org/3/library/hmac.html) using SHA-256 and the key above. An example message is:
 
-By default, we use anonymous MQTT connections; however, authentication can be set up adding `mqtt_username` and `mqtt_password` values to `sensor.env`.
+    ```json
+    {"hmac":"FKlepUuqx4dR6VX2fRIuavVvOkwRRUlay8IgM1VSmrQ=","payload":{"humidity":60.64,"temperature":20.52,"ts":1759384453,"ts_ns":920529791}}
+    ```
+
+3. In your Docker Compose file, mount your sensor config file to `/app/sensor.yaml` and load in your environment variables using `env_file`.
+
+To see the full set of availble configuration settings, refer to `config.py` in the `src/mock_sensor` directory.
