@@ -257,11 +257,11 @@ influx-token:
     set -euo pipefail
 
     # Create secret directory if it does not exist
-    mkdir -p infra/influx/secret
+    mkdir -p data-store/influx/secret
 
     # Check if the token file already exists
-    if [[ -f infra/influx/secret/admin_token.json ]]; then
-        echo "❌   Token file infra/influx/secret/admin_token.json already exists."
+    if [[ -f data-store/influx/secret/admin_token.json ]]; then
+        echo "❌   Token file data-store/influx/secret/admin_token.json already exists."
         echo "    If you want to create a new token, please delete the existing file first."
         exit 1
     fi
@@ -273,10 +273,10 @@ influx-token:
     echo "🛠️   Generating new admin token..."
     docker run -it --rm --name influx-token-gen -p 8181 influxdb:3-core \
         sh -c "influxdb3 create token --admin --offline --output-file /home/influxdb3/admin_token.json && cat /home/influxdb3/admin_token.json" \
-        | tail -n 4 > infra/influx/secret/admin_token.json
+        | tail -n 4 > data-store/influx/secret/admin_token.json
     echo "🛠️   Setting file permissions for the new admin token..."
-    sudo chown 1500:1500 infra/influx/secret/admin_token.json
-    echo "✅  Created token file infra/influx/secret/admin_token.json."
+    sudo chown 1500:1500 data-store/influx/secret/admin_token.json
+    echo "✅  Created token file data-store/influx/secret/admin_token.json."
     echo "🔐  Keep this file safe! It contains the admin token for InfluxDB."
 
 # Command-line interface to InfluxDB
@@ -299,3 +299,8 @@ gen-pass:
 readmes:
     #!/usr/bin/env bash
     find . -type f -iname '*README*' -not -path '*.venv*' -not -path '*cache*'
+
+# Find all .env files
+envs:
+    #!/usr/bin/env bash
+    find . -type f -name '*.env' -not -path '*.venv*' -not -path '*cache*'
