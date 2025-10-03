@@ -29,7 +29,7 @@ repos:
   rev: v2.2.4 # Use the sha / tag you want to point at
   hooks:
     - id: biome-check
-      files: ^nodejs/
+      files: ^node/.*
 
 # Lint Markdown files.
 - repo: https://github.com/DavidAnson/markdownlint-cli2
