@@ -1,0 +1,6 @@
+{
+  // Use one line per paragraph, disable line length rule
+  "line-length": false,
+  // Markdownlint doesn't understand admonition syntax, so we need to disable this rule
+  "code-block-style": false
+}
