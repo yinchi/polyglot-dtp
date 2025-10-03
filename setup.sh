@@ -179,3 +179,20 @@ else
 fi
 uv self version
 echo
+
+
+# Check for Node.js and yarn
+echo "🛠️  Checking for Node.js..."
+if ! node --version &> /dev/null; then
+    echo "Node.js not found. Installing Node.js LTS..."
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+    echo "✅  Node.js installed."
+else
+    echo "✅  Node.js is already installed."
+fi
+node --version
+echo "🛠️  Installing/updating yarn..."
+sudo npm install --global yarn
+yarn --version
+echo
