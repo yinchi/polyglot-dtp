@@ -1,0 +1,17 @@
+:root {
+  --md-admonition-icon--todo: url('/assets/icons/construction_FFB900.svg');
+}
+.md-typeset .admonition.todo,
+.md-typeset details.todo {
+  border-color: rgb(255, 185, 0);
+}
+.md-typeset .todo > .admonition-title,
+.md-typeset .todo > summary {
+  background-color: rgba(255, 185, 0, 0.1);
+}
+.md-typeset .todo > .admonition-title::before,
+.md-typeset .todo > summary::before {
+  background-color: rgb(255, 185, 0);
+  -webkit-mask-image: var(--md-admonition-icon--todo);
+          mask-image: var(--md-admonition-icon--todo);
+}

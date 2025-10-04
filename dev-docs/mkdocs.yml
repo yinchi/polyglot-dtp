@@ -1,0 +1,36 @@
+site_name: Developer Documentation for the Polyglot DTP project
+copyright: Copyright &copy; 2025 Yin-Chi Chan; Anandarup Mukherjee
+repo_url: https://github.com/yinchi/polyglot-dtp
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+  palette:
+    scheme: slate
+    primary: black
+    accent: indigo
+extra_css:
+  - assets/stylesheets/extra.css
+plugins:
+  - search
+  - kroki
+markdown_extensions:
+  - admonition
+  - smarty
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.keys
+  - pymdownx.superfences
+nav:
+  - Home: index.md
+  - VS Code Environment:
+    - Getting Started: vscode/getting-started.md
+    - Setting Up Extensions: vscode/extensions.md
+    - Working with Git and PyTest: vscode/git.md
+  - Package Management:
+    - Package Management: package-management.md
+  - Architecture:
+    - Overview: architecture/overview.md
