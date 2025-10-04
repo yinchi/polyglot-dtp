@@ -181,7 +181,8 @@ uv self version
 echo
 
 
-# Check for Node.js and yarn
+# Check for Node.js
+# No need to install yarn, corepack will handle it
 echo "🛠️  Checking for Node.js..."
 if ! node --version &> /dev/null; then
     echo "Node.js not found. Installing Node.js LTS..."
@@ -192,7 +193,3 @@ else
     echo "✅  Node.js is already installed."
 fi
 node --version
-echo "🛠️  Installing/updating yarn..."
-sudo npm install --global yarn
-yarn --version
-echo
