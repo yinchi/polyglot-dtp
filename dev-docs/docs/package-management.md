@@ -82,6 +82,18 @@ A pre-push hook for `pytest` is included in `.pre-commit.config.yaml`.  The `jus
 
 Workspace members are defined under `tool.uv.workspace` in the root `pyproject.toml`; thus any package not defined as a workspace member is treated as a standalone package.  However, packages can also be [explicitly excluded](https://docs.astral.sh/uv/concepts/projects/workspaces/#getting-started) from the workspace.
 
+### MicroPython
+
+See <https://github.com/yinchi/upy> for an example of a MicroPython-based Docker image.  We recommend that MicroPython be reserved for standalone scripts with simple dependencies (no NumPy or Pandas, for example!), for example to emulate a collection of IoT devices.
+
+Script dependencies can be installed in-script using:
+
+```py
+import mip
+mip.install("umqtt.robust")  # or some other package
+import mqtt.robust
+```
+
 ## Node.js (React)
 
 We will use React primarily to build single-page applications (SPAs) for our platform, using the [Vite](https://vite.dev/guide/) build tool.  To initialize a folder as a Vite project, use:
