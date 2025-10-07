@@ -7,6 +7,7 @@ services:
   neo4j:
     image: neo4j:5-community
     container_name: polyglot-dtp-neo4j
+    restart: always
     environment:
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-dtpsecret1}
     ports:

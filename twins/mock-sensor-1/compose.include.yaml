@@ -1,10 +1,15 @@
 services:
   mock-sensor-1:
     image: yinchi/mock-sensor:latest
-    container_name: mock-sensor-1
+    container_name: polyglot-dtp-mock-sensor-1
     build:
       context: ../../
       dockerfile: pypackages/mock_sensor/Dockerfile
+    restart: always
+    depends_on:
+      # From infra/mqtt/compose.include.yaml
+      mosquitto:
+        condition: service_healthy
     env_file:
       - mqtt.env
     volumes:
@@ -14,8 +19,3 @@ services:
       - /app/sensor.yaml
     networks:
       - iot
-
-networks:
-  iot:
-    external: true
-    name: polyglot-dtp-net-iot

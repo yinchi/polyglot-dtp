@@ -4,6 +4,7 @@ include:
   - ./data-store/neo4j/compose.include.yaml
   - ./data-store/influx/compose.include.yaml
   - ./infra/mqtt/compose.include.yaml
+  - ./twins/mock-sensor-1/compose.include.yaml
   - ./misc/test_api/compose.include.yaml
 
 # Additional services are defined in the included compose files.
@@ -19,7 +20,7 @@ services:
   traefik:
     image: traefik:3.5
     container_name: polyglot-dtp-traefik
-    restart: unless-stopped
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./infra/traefik/traefik.yml:/etc/traefik/traefik.yml:ro

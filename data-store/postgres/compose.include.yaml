@@ -8,6 +8,7 @@ services:
     # PostgreSQL with TimescaleDB extension
     image: timescale/timescaledb:latest-pg17
     container_name: polyglot-dtp-postgres
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-dtp}
       POSTGRES_DB: ${POSTGRES_DB:-dtp}
@@ -33,6 +34,10 @@ services:
     #   context: .
     #   dockerfile: Dockerfile
     container_name: polyglot-dtp-phppgadmin
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - ./phppgadmin/phppgadmin.conf:/etc/apache2/conf-available/phppgadmin.conf
       - ./phppgadmin/config.inc.php:/etc/phppgadmin/config.inc.php

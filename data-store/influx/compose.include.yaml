@@ -6,6 +6,7 @@ services:
   influx:
     image: influxdb:3-core
     container_name: polyglot-dtp-influx
+    restart: always
     environment:
       # See https://docs.influxdata.com/influxdb3/core/reference/config-options/
       - INFLUXDB3_NODE_IDENTIFIER_PREFIX=node0
