@@ -136,14 +136,17 @@ class MockSensor:
     def run(self):
         """Run the mock sensor, publishing metrics to MQTT and/or InfluxDB."""
         if self.mqtt_client:
-            ret_code = self.mqtt_client.connect(
-                self.auth_settings.mqtt_hostname, self.auth_settings.mqtt_port
-            )
-            if ret_code != 0:
-                logging.warning(f"Failed to connect to MQTT broker: {ret_code}")
-                logging.warning("MQTT messages may be lost.")
-            self.mqtt_client.loop_start()
-
+            try:
+                ret_code = self.mqtt_client.connect(
+                    self.auth_settings.mqtt_hostname, self.auth_settings.mqtt_port
+                )
+                if ret_code != 0:
+                    err_msg = f"Error code {ret_code}"
+                    raise ValueError(err_msg)
+                self.mqtt_client.loop_start()
+            except Exception as exc:
+                logging.error("Failed to connect to MQTT broker: %s", exc)
+                sys.exit(1)
         try:
             while True:
                 ts, ts_ns = divmod(time_ns(), 1_000_000_000)

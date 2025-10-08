@@ -11,5 +11,6 @@
     "files.associations": {
         "justfile": "just",
         "*.env": "properties"
-    }
+    },
+    "markdown-kroki.prefix": "kroki-"
 }

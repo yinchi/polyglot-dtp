@@ -33,4 +33,13 @@ nav:
   - Package Management:
     - Package Management: package-management.md
   - Architecture:
-    - Overview: architecture/overview.md
+    - Overview: arch/overview.md
+    - IoT Network: arch/iot.md
+    - Reverse Proxy: arch/reverse-proxy.md
+    - Central Datastore: arch/central-datastore.md
+  - Containerization:
+    - Docker Compose: cntr/compose.md
+    - Kubernetes and Helm: cntr/k8s.md
+    - Task Automation with Argo Workflows: cntr/argo-workflows.md
+  - CI/CD:
+    - GitHub Actions: cicd/github-actions.md
