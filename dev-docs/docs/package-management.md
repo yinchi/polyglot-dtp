@@ -3,8 +3,8 @@
 !!! note
     This page is about the management of code; for deployment using containers, see:
 
-    - Docker: (🚧 **TODO**)
-    - Self-hosted Kubernetes using Minikube: (🚧 **TODO**)
+    - [Docker](cntr/compose.md)
+    - [Self-hosted Kubernetes using Minikube](cntr/k8s.md) (🚧 **TODO**)
     - Google Cloud Platform: (🚧 **TODO**)
 
 ## Python

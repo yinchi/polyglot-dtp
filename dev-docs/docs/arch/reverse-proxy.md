@@ -6,9 +6,13 @@ We will choose [Traefik](https://doc.traefik.io/traefik/) as our reverse proxy, 
 - RateLimit
 - Routing: StripPrefix, RedirectRegex, RedirectScheme
 
-## Password file for platform-wide authentication (BasicAuth)
+## BasicAuth
 
-Currently, BasicAuth is set up platform-wide via `infra/traefik/dynamic.yml`.  The password file for the BasicAuth middleware is stored at `infra/traefik/htpasswd` (mounted as `/etc/traefik/htpasswd` in the container).  Since we need at minimum an admin account, create this file using:
+Currently, BasicAuth is set up platform-wide via `infra/traefik/dynamic.yml`.  Here, we instruct the middleware to insert a `X-Authenticated-User` header into the forwarded request, so that further authorization steps can be performed by each service.
+
+### Password file for platform-wide authentication (BasicAuth)
+
+The password file for the BasicAuth middleware is stored at `infra/traefik/htpasswd` (mounted as `/etc/traefik/htpasswd` in the container).  Since we need at minimum an admin account, create this file using:
 
 ```sh
 htpasswd -cB infra/traefik/htpasswd admin
@@ -28,7 +32,11 @@ htpasswd -D infra/traefik/htpasswd <user>  # Delete user
 !!!warning
     Each service in the DT platform should authorize each incoming request, as BasicAuth only performs authentication/authorization at the **platform** level.
 
-## 🚧 Authentication and permissions lookup using ForwardAuth and PostgreSQL (TODO)
+## 🚧 ForwardAuth  (TODO)
+
+This section is forthcoming.
+
+### Authentication and permissions lookup using PostgreSQL
 
 This section is forthcoming.
 
