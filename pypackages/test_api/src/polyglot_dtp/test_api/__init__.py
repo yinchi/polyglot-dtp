@@ -12,7 +12,7 @@ from fastapi.responses import PlainTextResponse
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Endpoints that should not produce access log entries
-ROOT_PATH = "/twins/test"  # Match the `--root_path` in the launch command
+ROOT_PATH = "/test-api"  # Match the `--root_path` in the launch command
 SILENT_ENDPOINTS = ("/health",)
 SILENT_ENDPOINTS = {f"{ROOT_PATH}{ep}" for ep in SILENT_ENDPOINTS}
 
